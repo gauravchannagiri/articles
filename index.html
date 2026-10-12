@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Autonomy Loop · Gaurav Channagiri</title>
+<meta name="description" content="Essays on AI agents, the infrastructure underneath them, and who owns the loop once the model can act.">
+<meta name="author" content="Gaurav Channagiri">
+<link rel="canonical" href="https://gauravchannagiri.github.io/articles//">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gauravchannagiri.github.io/articles//">
+<meta property="og:title" content="The Autonomy Loop · Gaurav Channagiri">
+<meta property="og:description" content="Essays on AI agents, the infrastructure underneath them, and who owns the loop once the model can act.">
+<meta property="og:image" content="https://gauravchannagiri.github.io/articles//og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Autonomy Loop · Gaurav Channagiri">
+<meta name="twitter:description" content="Essays on AI agents, the infrastructure underneath them, and who owns the loop once the model can act.">
+<meta name="twitter:image" content="https://gauravchannagiri.github.io/articles//og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:#4285F4; --red:#EA4335; --yellow:#FBBC05;
+    --green:#34A853; --purple:#9c27b0; --teal:#00BCD4;
+    --bg:#0a0a0f; --card:#111118; --card-hi:#17171f;
+    --line:rgba(255,255,255,0.08); --line-hi:rgba(255,255,255,0.18);
+    --text:#e8e8f0; --muted:#8e8ea6; --faint:rgba(255,255,255,0.58);
+  }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 300; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 1060px; margin: 0 auto; padding: 0 22px; }
+
+  /* HERO */
+  .hero { padding: 64px 0 48px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 10.5px;
+    letter-spacing: 2.6px; text-transform: uppercase; color: var(--blue); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', 'Oswald', 'Arial Narrow', sans-serif;
+    font-size: clamp(52px, 10vw, 104px); line-height: 0.88; letter-spacing: 1.5px;
+    background: linear-gradient(135deg,#fff 0%,#9a9ac0 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .deck { margin-top: 20px; font-size: 16px; color: var(--muted); max-width: 640px; line-height: 1.7; }
+
+  .headline {
+    margin-top: 40px; border: 1px solid var(--line); border-radius: 14px;
+    background: radial-gradient(120% 140% at 0% 0%, rgba(234,67,53,0.15), transparent 58%), var(--card);
+    padding: 30px 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 28px;
+  }
+  .headline-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(64px,13vw,108px);
+    line-height: 0.82; color: #fff; flex: 0 0 auto;
+  }
+  .headline-txt { flex: 1 1 300px; font-size: 15px; color: var(--muted); line-height: 1.7; }
+  .headline-txt b { color: var(--text); font-weight: 500; }
+
+  /* TAGS */
+  .tag {
+    display:inline-block; font-family:'DM Mono',monospace; font-size:9px;
+    letter-spacing:1.4px; text-transform:uppercase; padding:2px 7px;
+    border-radius:4px; border:1px solid currentColor; white-space:nowrap;
+  }
+  .tag.filed    { color: var(--green); }
+  .tag.stated   { color: var(--teal); }
+  .tag.estimate { color: var(--yellow); }
+  .tag.reported { color: var(--purple); }
+
+  .provenance { margin-top:14px; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); line-height:2; }
+  .provenance b { color: var(--muted); font-weight:400; }
+
+  /* STATS */
+  .stats {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+    border-radius:14px; overflow:hidden; margin-top:34px;
+  }
+  .stat { background:var(--card); padding:22px 14px; text-align:center; }
+  .stat-num { font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1; letter-spacing:1px; }
+  .stat-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:6px; }
+  .stat .tag { margin-top:9px; }
+
+  /* SECTIONS */
+  section { padding: 60px 0 0; }
+  .sec-head { margin-bottom: 26px; }
+  .sec-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2.4px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  h2 { font-family:'Bebas Neue',sans-serif; font-size:clamp(30px,5vw,42px); letter-spacing:1px; line-height:1; color:#fff; }
+  .sec-sub { margin-top:12px; font-size:14.5px; color:var(--muted); max-width:680px; line-height:1.7; }
+
+  /* BAR */
+  .bar { display:flex; height:68px; border-radius:12px; overflow:hidden; border:1px solid var(--line); }
+  .bar-seg { display:flex; align-items:center; justify-content:center; text-align:center; font-family:'DM Mono',monospace; font-size:11px; padding:0 10px; }
+  .bar-seg.a { flex:48; background:rgba(234,67,53,0.72); color:#fff; font-weight:500; }
+  .bar-seg.b { flex:52; background:var(--card); color:var(--muted); }
+  .bar-key { display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:10px; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); }
+
+  /* TRAJECTORY */
+  .traj { display:flex; align-items:flex-end; gap:14px; height:190px; margin-top:8px; }
+  .traj-col { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:8px; height:100%; }
+  .traj-bar { width:100%; border-radius:6px 6px 0 0; background:linear-gradient(180deg,var(--blue),rgba(66,133,244,0.25)); }
+  .traj-val { font-family:'Bebas Neue',sans-serif; font-size:20px; color:#fff; letter-spacing:0.5px; }
+  .traj-lab { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--muted); }
+
+  /* TWIST PANEL */
+  .twist {
+    border:1px solid rgba(234,67,53,0.35); border-radius:14px;
+    background: radial-gradient(100% 130% at 100% 0%, rgba(234,67,53,0.13), transparent 60%), var(--card);
+    padding:28px 26px;
+  }
+  .twist-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:20px; }
+  .twist-cell { background:var(--card); padding:18px 14px; text-align:center; }
+  .twist-cell .n { font-family:'Bebas Neue',sans-serif; font-size:30px; line-height:1; }
+  .twist-cell .l { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+  /* GRID/CARDS */
+  .grid { display:grid; gap:14px; }
+  .g4 { grid-template-columns:repeat(4,1fr); }
+  .g3 { grid-template-columns:repeat(3,1fr); }
+  .g2 { grid-template-columns:repeat(2,1fr); }
+  .grid + .grid { margin-top:14px; }
+
+  .card {
+    border:1px solid var(--line); border-top:2px solid var(--accent,var(--blue));
+    border-radius:12px; background:var(--card); padding:22px 20px;
+    transition:background .2s,border-color .2s,transform .2s;
+  }
+  .card.tappable { cursor:pointer; }
+  .card.tappable:hover { background:var(--card-hi); border-color:var(--line-hi); border-top-color:var(--accent); transform:translateY(-2px); }
+  .card.tappable:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .card-head { margin-bottom:14px; }
+  .card-name { font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:1px; line-height:1.05; color:#fff; }
+  .card-role { display:inline-block; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent); margin-top:5px; }
+  .card-desc { font-size:13px; color:var(--muted); line-height:1.65; }
+  .figures { margin-top:14px; padding-top:14px; border-top:1px solid var(--line); font-family:'DM Mono',monospace; font-size:11px; color:#cdd1de; line-height:1.9; }
+  .figures span { color:var(--muted); }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .chip { font-family:'DM Mono',monospace; font-size:10px; padding:4px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.11); color:rgba(255,255,255,0.58); }
+  .chip.lit { border-color:var(--accent); color:#fff; }
+  .collapse { max-height:0; overflow:hidden; opacity:0; visibility:hidden;
+    transition:max-height .35s ease, opacity .3s ease, visibility 0s linear .35s; }
+  .card.open .collapse { max-height:600px; opacity:1; visibility:visible; transition-delay:0s,0s,0s; }
+  .hint { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:rgba(255,255,255,0.38); margin-top:14px; }
+  .card.open .hint { display:none; }
+
+  /* TIMELINE */
+  .timeline { border-top:1px solid var(--line); }
+  .tl-row { display:grid; grid-template-columns:112px 1fr; gap:22px; padding:22px 0; border-bottom:1px solid var(--line); }
+  .tl-date { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); padding-top:4px; }
+  .tl-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.8px; color:#fff; margin-bottom:7px; }
+  .tl-title .tag { margin-left:8px; vertical-align:3px; }
+  .tl-body { font-size:13.5px; color:var(--muted); line-height:1.7; }
+
+  /* SPLIT (vs bear case) */
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .split-col { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:24px 22px; }
+  .split-col.mine { border-color:rgba(52,168,83,0.35); }
+  .split-head { font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:0.8px; color:#fff; margin-bottom:6px; }
+  .split-tag { font-family:'DM Mono',monospace; font-size:9.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+  .split-col ul { list-style:none; display:grid; gap:10px; }
+  .split-col li { font-size:13px; color:var(--muted); line-height:1.6; padding-left:16px; position:relative; }
+  .split-col li::before { content:'—'; position:absolute; left:0; color:var(--faint); }
+
+  /* COUNTER */
+  .counter { border-top-color:var(--yellow); }
+  .counter .card-name { display:flex; gap:10px; align-items:baseline; }
+  .counter .num { font-family:'DM Mono',monospace; font-size:12px; color:var(--yellow); }
+
+  /* SOURCES */
+  .sources { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:26px; }
+  .sources ol { list-style:none; counter-reset:s; display:grid; gap:10px; }
+  .sources li { counter-increment:s; position:relative; padding-left:30px; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); line-height:1.7; }
+  .sources li::before { content:counter(s,decimal-leading-zero); position:absolute; left:0; color:var(--muted); }
+
+  .closer { margin-top:60px; padding:44px 0; border-top:1px solid var(--line-hi); border-bottom:1px solid var(--line-hi); text-align:center; }
+  .closer p { font-family:'Bebas Neue',sans-serif; font-size:clamp(26px,4.6vw,44px); letter-spacing:1px; line-height:1.12; color:#fff; max-width:720px; margin:0 auto; }
+  footer { padding:30px 0 60px; text-align:center; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); line-height:2; }
+
+  @media (max-width:860px){ .g4{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:620px){
+    .g4,.g3,.g2,.split{grid-template-columns:1fr;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .twist-grid{grid-template-columns:1fr;}
+    .tl-row{grid-template-columns:1fr;gap:8px;}
+    .headline{gap:16px;padding:24px 20px;}
+    .bar-seg{font-size:9.5px;}
+    .traj{height:150px;gap:8px;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important;} }
+
+.prose p{margin:0 0 14px} .prose h3{margin:28px 0 10px;font-size:20px;font-weight:600;color:var(--text)}
+.prose ul,.prose ol{margin:0 0 16px 22px} .prose li{margin:0 0 8px}
+.prose a{color:var(--blue);text-underline-offset:3px;word-break:break-word}
+.prose blockquote{border-left:3px solid var(--blue);padding:6px 0 6px 18px;margin:18px 0;color:var(--muted)}
+.tblw{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--line);border-radius:12px}
+.tblw table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tblw th{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tblw td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tblw tr:last-child td{border-bottom:0}
+.tblw thead:empty,.tblw thead tr:only-child th:empty{display:none}
+figure.xf{margin:28px auto} figure.xf svg{display:block;width:100%;height:auto}
+figure.xf figcaption{font-size:14px;color:var(--muted);margin-top:12px;line-height:1.55}
+@media(max-width:600px){.tblw table{font-size:14px} .tblw th,.tblw td{padding:9px 10px}}
+
+.prose{font-size:16.5px;line-height:1.75;color:var(--text);max-width:760px}
+.prose strong{font-weight:600}
+section .prose{margin-top:6px}
+
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:20px 0 8px}
+.acard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 20px 16px;border-top:3px solid var(--c,var(--blue))}
+.acard .k{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--c,var(--blue));margin-bottom:6px}
+.acard h3{font-size:19px;font-weight:600;line-height:1.3;margin:0 0 10px;color:var(--text)}
+.acard p{font-size:14.5px;line-height:1.65;color:var(--faint);margin:0 0 8px}
+.acard p strong{color:var(--text);font-weight:600}
+.acard.hum{grid-column:1/-1;background:radial-gradient(120% 140% at 0% 0%,rgba(251,188,5,.12),transparent 60%),var(--card-hi);border-top-color:var(--yellow)}
+.phase{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin:30px 0 4px;color:var(--text)}
+.ex{border-left:2px solid var(--line-hi);padding-left:12px;font-style:italic}
+@media(max-width:720px){.cards{grid-template-columns:1fr}}
+.acard a{color:inherit;text-decoration:none}.acard a:hover h3{color:var(--blue)}.cards{grid-template-columns:1fr}</style></head><body><div class="wrap"><div class="hero"><div class="eyebrow">Gaurav Channagiri</div><h1>The Autonomy Loop</h1><p class="deck">Essays on AI agents, the infrastructure underneath them, and who owns the loop once the model can act.</p></div><section><div class="cards"><div class="acard" style="--c:#34A853"><a href="./the-silent-landlord/"><div class="k">No. 03</div><h3 style="font-size:24px">The Silent Landlord</h3><p>Google doesn&#x27;t just rent you the house. It owns the land, the power and a stake in the neighbours.</p></a></div><div class="acard" style="--c:#4285F4"><a href="./the-two-name-problem/"><div class="k">No. 04</div><h3 style="font-size:24px">The Two-Name Problem</h3><p>Google Cloud&#x27;s backlog grew 385% in a year. Two customers sit under half of where it&#x27;s heading.</p></a></div><div class="acard" style="--c:#ffab27"><a href="./the-loop-left-the-chat-window/"><div class="k">No. 05</div><h3 style="font-size:24px">The Loop Left the Chat Window</h3><p>Agents broke the token bill. The constraint nobody has priced is your data.</p></a></div><div class="acard" style="--c:#FBBC05"><a href="./your-deal-already-started-without-you/"><div class="k">Sales</div><h3 style="font-size:24px">Your Deal Already Started Without You</h3><p>Seven AI agents work every deal. One human closes it.</p></a></div><div class="acard" style="--c:#EA4335"><a href="./the-back-office-that-runs-itself/"><div class="k">Small business</div><h3 style="font-size:24px">The Back Office That Runs Itself</h3><p>A small business, a crew of agents, and the safeguards that make it trustworthy.</p></a></div></div></section><footer>Gaurav Channagiri · Personal analysis. Public sources only. Not the view of any employer.</footer></div></body></html>

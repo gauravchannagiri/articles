@@ -1,0 +1,549 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Two-Name Problem · Google Cloud&#x27;s Concentration Risk</title>
+<meta name="description" content="Google Cloud&#x27;s backlog grew 385% in a year. The demand is real, the constraint is physical, and the revenue base is two names deep.">
+<meta name="author" content="Gaurav Channagiri">
+<link rel="canonical" href="https://gauravchannagiri.github.io/articles/the-two-name-problem/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gauravchannagiri.github.io/articles/the-two-name-problem/">
+<meta property="og:title" content="The Two-Name Problem · Google Cloud&#x27;s Concentration Risk">
+<meta property="og:description" content="Google Cloud&#x27;s backlog grew 385% in a year. The demand is real, the constraint is physical, and the revenue base is two names deep.">
+<meta property="og:image" content="https://gauravchannagiri.github.io/articles/the-two-name-problem/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Two-Name Problem · Google Cloud&#x27;s Concentration Risk">
+<meta name="twitter:description" content="Google Cloud&#x27;s backlog grew 385% in a year. The demand is real, the constraint is physical, and the revenue base is two names deep.">
+<meta name="twitter:image" content="https://gauravchannagiri.github.io/articles/the-two-name-problem/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><meta name="theme-color" content="#0a0a0f"><style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:#4285F4; --red:#EA4335; --yellow:#FBBC05;
+    --green:#34A853; --purple:#9c27b0; --teal:#00BCD4;
+    --bg:#0a0a0f; --card:#111118; --card-hi:#17171f;
+    --line:rgba(255,255,255,0.08); --line-hi:rgba(255,255,255,0.18);
+    --text:#e8e8f0; --muted:#8e8ea6; --faint:rgba(255,255,255,0.58);
+  }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 300; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: 100%; max-width: 1060px; margin: 0 auto; padding: 0 22px; }
+
+  /* HERO */
+  .hero { padding: 64px 0 48px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 10.5px;
+    letter-spacing: 2.6px; text-transform: uppercase; color: var(--blue); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', 'Oswald', 'Arial Narrow', sans-serif;
+    font-size: clamp(52px, 10vw, 104px); line-height: 0.88; letter-spacing: 1.5px;
+    background: linear-gradient(135deg,#fff 0%,#9a9ac0 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .deck { margin-top: 20px; font-size: 16px; color: var(--muted); max-width: 640px; line-height: 1.7; }
+
+  .headline {
+    margin-top: 40px; border: 1px solid var(--line); border-radius: 14px;
+    background: radial-gradient(120% 140% at 0% 0%, rgba(234,67,53,0.15), transparent 58%), var(--card);
+    padding: 30px 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 28px;
+  }
+  .headline-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(64px,13vw,108px);
+    line-height: 0.82; color: #fff; flex: 0 0 auto;
+  }
+  .headline-txt { flex: 1 1 300px; font-size: 15px; color: var(--muted); line-height: 1.7; }
+  .headline-txt b { color: var(--text); font-weight: 500; }
+
+  /* TAGS */
+  .tag {
+    display:inline-block; font-family:'DM Mono',monospace; font-size:9px;
+    letter-spacing:1.4px; text-transform:uppercase; padding:2px 7px;
+    border-radius:4px; border:1px solid currentColor; white-space:nowrap;
+  }
+  .tag.filed    { color: var(--green); }
+  .tag.stated   { color: var(--teal); }
+  .tag.estimate { color: var(--yellow); }
+  .tag.reported { color: var(--purple); }
+
+  .provenance { margin-top:14px; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); line-height:2; }
+  .provenance b { color: var(--muted); font-weight:400; }
+
+  /* STATS */
+  .stats {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+    border-radius:14px; overflow:hidden; margin-top:34px;
+  }
+  .stat { background:var(--card); padding:22px 14px; text-align:center; }
+  .stat-num { font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1; letter-spacing:1px; }
+  .stat-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:6px; }
+  .stat .tag { margin-top:9px; }
+
+  /* SECTIONS */
+  section { padding: 60px 0 0; }
+  .sec-head { margin-bottom: 26px; }
+  .sec-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2.4px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  h2 { font-family:'Bebas Neue',sans-serif; font-size:clamp(30px,5vw,42px); letter-spacing:1px; line-height:1; color:#fff; }
+  .sec-sub { margin-top:12px; font-size:14.5px; color:var(--muted); max-width:680px; line-height:1.7; }
+
+  /* BAR */
+  .bar { display:flex; height:68px; border-radius:12px; overflow:hidden; border:1px solid var(--line); }
+  .bar-seg { display:flex; align-items:center; justify-content:center; text-align:center; font-family:'DM Mono',monospace; font-size:11px; padding:0 10px; }
+  .bar-seg.a { flex:48; background:rgba(234,67,53,0.72); color:#fff; font-weight:500; }
+  .bar-seg.b { flex:52; background:var(--card); color:var(--muted); }
+  .bar-key { display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:10px; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); }
+
+  /* TRAJECTORY */
+  .traj { display:flex; align-items:flex-end; gap:14px; height:190px; margin-top:8px; }
+  .traj-col { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:8px; height:100%; }
+  .traj-bar { width:100%; border-radius:6px 6px 0 0; background:linear-gradient(180deg,var(--blue),rgba(66,133,244,0.25)); }
+  .traj-val { font-family:'Bebas Neue',sans-serif; font-size:20px; color:#fff; letter-spacing:0.5px; }
+  .traj-lab { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--muted); }
+
+  /* TWIST PANEL */
+  .twist {
+    border:1px solid rgba(234,67,53,0.35); border-radius:14px;
+    background: radial-gradient(100% 130% at 100% 0%, rgba(234,67,53,0.13), transparent 60%), var(--card);
+    padding:28px 26px;
+  }
+  .twist-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:20px; }
+  .twist-cell { background:var(--card); padding:18px 14px; text-align:center; }
+  .twist-cell .n { font-family:'Bebas Neue',sans-serif; font-size:30px; line-height:1; }
+  .twist-cell .l { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+  /* GRID/CARDS */
+  .grid { display:grid; gap:14px; }
+  .g4 { grid-template-columns:repeat(4,1fr); }
+  .g3 { grid-template-columns:repeat(3,1fr); }
+  .g2 { grid-template-columns:repeat(2,1fr); }
+  .grid + .grid { margin-top:14px; }
+
+  .card {
+    border:1px solid var(--line); border-top:2px solid var(--accent,var(--blue));
+    border-radius:12px; background:var(--card); padding:22px 20px;
+    transition:background .2s,border-color .2s,transform .2s;
+  }
+  .card.tappable { cursor:pointer; }
+  .card.tappable:hover { background:var(--card-hi); border-color:var(--line-hi); border-top-color:var(--accent); transform:translateY(-2px); }
+  .card.tappable:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .card-head { margin-bottom:14px; }
+  .card-name { font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:1px; line-height:1.05; color:#fff; }
+  .card-role { display:inline-block; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent); margin-top:5px; }
+  .card-desc { font-size:13px; color:var(--muted); line-height:1.65; }
+  .figures { margin-top:14px; padding-top:14px; border-top:1px solid var(--line); font-family:'DM Mono',monospace; font-size:11px; color:#cdd1de; line-height:1.9; }
+  .figures span { color:var(--muted); }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .chip { font-family:'DM Mono',monospace; font-size:10px; padding:4px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.11); color:rgba(255,255,255,0.58); }
+  .chip.lit { border-color:var(--accent); color:#fff; }
+  .collapse { max-height:0; overflow:hidden; opacity:0; visibility:hidden;
+    transition:max-height .35s ease, opacity .3s ease, visibility 0s linear .35s; }
+  .card.open .collapse { max-height:600px; opacity:1; visibility:visible; transition-delay:0s,0s,0s; }
+  .hint { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:rgba(255,255,255,0.38); margin-top:14px; }
+  .card.open .hint { display:none; }
+
+  /* TIMELINE */
+  .timeline { border-top:1px solid var(--line); }
+  .tl-row { display:grid; grid-template-columns:112px 1fr; gap:22px; padding:22px 0; border-bottom:1px solid var(--line); }
+  .tl-date { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); padding-top:4px; }
+  .tl-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.8px; color:#fff; margin-bottom:7px; }
+  .tl-title .tag { margin-left:8px; vertical-align:3px; }
+  .tl-body { font-size:13.5px; color:var(--muted); line-height:1.7; }
+
+  /* SPLIT (vs bear case) */
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .split-col { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:24px 22px; }
+  .split-col.mine { border-color:rgba(52,168,83,0.35); }
+  .split-head { font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:0.8px; color:#fff; margin-bottom:6px; }
+  .split-tag { font-family:'DM Mono',monospace; font-size:9.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+  .split-col ul { list-style:none; display:grid; gap:10px; }
+  .split-col li { font-size:13px; color:var(--muted); line-height:1.6; padding-left:16px; position:relative; }
+  .split-col li::before { content:'—'; position:absolute; left:0; color:var(--faint); }
+
+  /* COUNTER */
+  .counter { border-top-color:var(--yellow); }
+  .counter .card-name { display:flex; gap:10px; align-items:baseline; }
+  .counter .num { font-family:'DM Mono',monospace; font-size:12px; color:var(--yellow); }
+
+  /* SOURCES */
+  .sources { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:26px; }
+  .sources ol { list-style:none; counter-reset:s; display:grid; gap:10px; }
+  .sources li { counter-increment:s; position:relative; padding-left:30px; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); line-height:1.7; }
+  .sources li::before { content:counter(s,decimal-leading-zero); position:absolute; left:0; color:var(--muted); }
+
+  .closer { margin-top:60px; padding:44px 0; border-top:1px solid var(--line-hi); border-bottom:1px solid var(--line-hi); text-align:center; }
+  .closer p { font-family:'Bebas Neue',sans-serif; font-size:clamp(26px,4.6vw,44px); letter-spacing:1px; line-height:1.12; color:#fff; max-width:720px; margin:0 auto; }
+  footer { padding:30px 0 60px; text-align:center; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--faint); line-height:2; }
+
+  @media (max-width:860px){ .g4{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:620px){
+    .g4,.g3,.g2,.split{grid-template-columns:1fr;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .twist-grid{grid-template-columns:1fr;}
+    .tl-row{grid-template-columns:1fr;gap:8px;}
+    .headline{gap:16px;padding:24px 20px;}
+    .bar-seg{font-size:9.5px;}
+    .traj{height:150px;gap:8px;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important;} }
+
+.prose p{margin:0 0 14px} .prose h3{margin:28px 0 10px;font-size:20px;font-weight:600;color:var(--text)}
+.prose ul,.prose ol{margin:0 0 16px 22px} .prose li{margin:0 0 8px}
+.prose a{color:var(--blue);text-underline-offset:3px;word-break:break-word}
+.prose blockquote{border-left:3px solid var(--blue);padding:6px 0 6px 18px;margin:18px 0;color:var(--muted)}
+.tblw{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--line);border-radius:12px}
+.tblw table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tblw th{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tblw td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tblw tr:last-child td{border-bottom:0}
+.tblw thead:empty,.tblw thead tr:only-child th:empty{display:none}
+figure.xf{margin:28px auto} figure.xf svg{display:block;width:100%;height:auto}
+figure.xf figcaption{font-size:14px;color:var(--muted);margin-top:12px;line-height:1.55}
+@media(max-width:600px){.tblw table{font-size:14px} .tblw th,.tblw td{padding:9px 10px}}
+
+.prose{font-size:16.5px;line-height:1.75;color:var(--text);max-width:760px}
+.prose strong{font-weight:600}
+section .prose{margin-top:6px}
+</style></head><body>
+<div class="wrap"><div class="hero">
+<div class="eyebrow">Gaurav Channagiri · The Autonomy Loop 04 · October 2026</div>
+<h1>The Two-Name Problem</h1>
+<p class="deck">Google Cloud's backlog grew 385% in a year. The demand is real and the constraint is physical. But the revenue base is two names deep, and Alphabet is booking paper gains on the same companies that owe it the money.</p>
+<div class="headline"><div class="headline-num">48%</div><div class="headline-txt">
+UBS estimates that OpenAI and Anthropic account for <b>27% of Google Cloud's 2026 revenue</b>, rising above <b>48% in 2027</b>: over $124B combined, with Anthropic alone modelled at $76B.
+<div style="margin-top:12px"><span class="tag estimate">Estimate (UBS)</span></div></div></div>
+<div class="stats">
+<div class="stat"><div class="stat-num" style="color:var(--blue)">$514B</div><div class="stat-label">Cloud backlog, Q2</div><span class="tag filed">Filed</span></div>
+<div class="stat"><div class="stat-num" style="color:var(--red)">$44.9B</div><div class="stat-label">Q2 capex</div><span class="tag filed">Filed</span></div>
+<div class="stat"><div class="stat-num" style="color:var(--yellow)">−$5.9B</div><div class="stat-label">Q2 free cash flow</div><span class="tag filed">Filed</span></div>
+<div class="stat"><div class="stat-num" style="color:var(--green)">385%</div><div class="stat-label">Backlog growth YoY</div><span class="tag filed">Filed</span></div>
+</div>
+<p class="provenance"><b>Filed</b> from an SEC filing or official results release &nbsp;·&nbsp; <b>Stated</b> said on the record &nbsp;·&nbsp; <b>Estimate</b> third-party analyst model &nbsp;·&nbsp; <b>Reported</b> credible secondary reporting<br>
+Every figure carries its provenance. The concentration numbers are estimates, not disclosures. Alphabet has never broken out customer concentration.</p></div>
+<div class="prose" style="padding:36px 0 0"><p>Google Cloud's backlog grew 385% in a year.</p>
+<p>The demand is real.</p>
+<p>The constraint is physical.</p>
+<p>The revenue base is two names deep.</p>
+<p>And Alphabet is booking paper gains on the same companies that owe it the money.</p></div><section id="the-numbers-on-one-page">
+<div class="sec-head"><div class="sec-label">The numbers on one page</div><h2>The numbers on one page</h2></div>
+<div class="prose"><div class="tblw"><table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Value</th>
+<th>Provenance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google Cloud backlog, Q2 2026</td>
+<td>$514B ($513.9B in the 10-Q)</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>Backlog growth, year on year</td>
+<td>385% ($106B → $514B)</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>Q2 2026 capex</td>
+<td>$44.9B</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>Q2 2026 free cash flow</td>
+<td>−$5.9B</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>2026 capex guidance</td>
+<td>$195–205B</td>
+<td>Stated</td>
+</tr>
+<tr>
+<td>OpenAI + Anthropic share of Google Cloud revenue</td>
+<td>27% in 2026 → 48%+ in 2027</td>
+<td>Estimate (UBS)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Filed</strong> — from an SEC filing or official results release.
+<strong>Stated</strong> — said on the record.
+<strong>Estimate</strong> — third-party analyst model.
+<strong>Reported</strong> — credible secondary reporting.</p>
+<p>Every figure carries its provenance.</p>
+<p>The concentration numbers are estimates, not disclosures.</p>
+<p>Alphabet has never broken out customer concentration.</p></div></section>
+<section id="s1">
+<div class="sec-head"><div class="sec-label">01 · The Two-Name Problem</div><h2>The demand is not the problem</h2></div>
+<figure class="xf" data-fig="fig1-backlog" role="img" aria-label="Bar chart: Google Cloud remaining performance obligations rose from $106B in Q2 2025 to $460B in Q1 2026 and $514B in Q2 2026." style="max-width:760px">
+<div class="traj" aria-hidden="true">
+<div class="traj-col"><div class="traj-val">$106B</div><div class="traj-bar" style="height:21%"></div><div class="traj-lab">Q2 2025</div></div>
+<div class="traj-col"><div class="traj-val">$460B</div><div class="traj-bar" style="height:89%"></div><div class="traj-lab">Q1 2026</div></div>
+<div class="traj-col"><div class="traj-val">$514B</div><div class="traj-bar" style="height:100%"></div><div class="traj-lab">Q2 2026</div></div>
+</div><figcaption>Fig. 1. Google Cloud remaining performance obligations (backlog), $106B to $514B in a year, up 385%. Filed.</figcaption></figure><div class="prose"><p>It has become fashionable to call this a bubble.</p>
+<p>The disclosures don't support that.</p>
+<p>Google Cloud's backlog went from $106B to $514B in a year. <span class="tag filed">Filed</span></p>
+<p>Cloud revenue grew 82%, to $24.768B in the quarter. <span class="tag filed">Filed</span></p>
+<p>Sundar Pichai stated the binding constraint is physical supply, not demand. <span class="tag stated">Stated</span></p>
+<p>Just over half the backlog is scheduled to convert to recognised revenue within 24 months. <span class="tag stated">Stated</span></p>
+<p>That is not speculative pipeline.</p>
+<p>That is a delivery schedule.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Quarter</th>
+<th>Google Cloud remaining performance obligations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q2 2025</td>
+<td>$106B</td>
+</tr>
+<tr>
+<td>Q1 2026</td>
+<td>$460B</td>
+</tr>
+<tr>
+<td>Q2 2026</td>
+<td>$514B</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section id="s2">
+<div class="sec-head"><div class="sec-label">02 · The Two-Name Problem</div><h2>Two names, half the forward revenue</h2></div>
+<div class="prose"><p>A backlog roughly five times annualised revenue is the signature of a few very large multi-year commitments.</p>
+<p>Not many mid-sized customers standardising.</p>
+<p>UBS estimates OpenAI and Anthropic account for 27% of Google Cloud's 2026 revenue. <span class="tag estimate">Estimate</span></p>
+<p>Rising above 48% in 2027. <span class="tag estimate">Estimate</span></p>
+<p>Over $124B combined, with Anthropic alone modelled at $76B. <span class="tag estimate">Estimate</span></p>
+<p>The weight sits with Anthropic.</p>
+<p>OpenAI holds large committed capacity with Azure and Oracle, so its Google share is the smaller and more contestable half.</p>
+<p>That's the right place to push on the estimate.</p>
+<p>It doesn't move the Anthropic figure.</p>
+<p>That's where the concentration lives.</p></div></section>
+<section id="s3">
+<div class="sec-head"><div class="sec-label">03 · The Two-Name Problem</div><h2>The earnings beat was a paper gain</h2></div>
+<div class="prose"><p>Alphabet reported Q2 EPS of $9.11 against a consensus of $2.89. <span class="tag filed">Filed</span></p>
+<p>A clear beat.</p>
+<p>Until you read what's inside it.</p>
+<p>The figure included roughly $99B in pre-tax gains on equity stakes, including SpaceX and Anthropic. <span class="tag filed">Filed</span></p>
+<p>After tax, about $6.26 a share.</p>
+<p>Strip it out and operational EPS was closer to $2.85.</p>
+<p>A miss.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reported EPS</td>
+<td>$9.11</td>
+</tr>
+<tr>
+<td>Pre-tax equity-stake gains</td>
+<td>~$99B (≈ $6.26/share after tax)</td>
+</tr>
+<tr>
+<td>Operational EPS</td>
+<td>~$2.85 vs $2.89 consensus</td>
+</tr>
+</tbody>
+</table></div>
+<p>Marking stakes to market is standard accounting.</p>
+<p>That isn't the interesting part.</p>
+<p>The reflexivity is.</p>
+<p>The headline quarter was carried by the rising value of counterparties that are also among Alphabet's largest customers.</p>
+<p>If foundation-lab valuations compress, Alphabet takes the hit twice in one event.</p>
+<p>The equity asset.</p>
+<p>And the contracted cloud receivable.</p>
+<p>Not two exposures.</p>
+<p>One bet, booked in two places.</p></div></section>
+<section id="s4">
+<div class="sec-head"><div class="sec-label">04 · The Two-Name Problem</div><h2>Four balance sheets, one bet</h2></div>
+<div class="prose"><p>Alphabet is landlord, lender and shareholder at once.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Party</th>
+<th>Role</th>
+<th>Key figures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Alphabet</strong></td>
+<td>The landlord</td>
+<td>$195–205B 2026 capex guidance · $44.9B Q2 capex · −$5.9B Q2 free cash flow <span class="tag filed">Filed</span></td>
+</tr>
+<tr>
+<td><strong>Anthropic</strong></td>
+<td>Anchor tenant, investee</td>
+<td>Up to $40B Alphabet commitment (Apr 2026) <span class="tag stated">Stated</span> · up to 1M TPUs and 5GW of capacity over five years <span class="tag stated">Stated</span> · ~14% Alphabet stake, capped at 15%, as of 2025 court filings <span class="tag filed">Filed</span></td>
+</tr>
+<tr>
+<td><strong>SpaceX</strong></td>
+<td>Supplier and holding</td>
+<td>Google pays SpaceX $920M a month for compute, Oct 2026 – Jun 2029 <span class="tag filed">Filed</span> · Alphabet's stake valued at $94.1B in the Q2 10-Q <span class="tag filed">Filed</span> — roughly 5% by outside estimates; the 10-Q gives no percentage <span class="tag estimate">Estimate</span></td>
+</tr>
+<tr>
+<td><strong>Blackstone</strong></td>
+<td>The financier</td>
+<td>US TPU cloud JV: $5B initial equity, 500MW targeted for 2027 <span class="tag stated">Stated</span> · majority ownership, ~$25B total value with leverage <span class="tag reported">Reported</span></td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section id="s5">
+<div class="sec-head"><div class="sec-label">05 · The Two-Name Problem</div><h2>What the two names are buying</h2></div>
+<div class="prose"><p>This is the part that makes the concentration bearable.</p>
+<p>And the part most bear cases ignore.</p>
+<p>Five strata.</p>
+<p>Everything above the bedrock can be regulated, cloned or churned.</p>
+<p>The bedrock takes a decade and a grid connection to reproduce.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Stratum</th>
+<th>What it does</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ambient capture</strong></td>
+<td>Intent captured before a URL is typed</td>
+<td>AI Mode · Circle to Search · Google Lens · Gemini for Home · Waymo</td>
+</tr>
+<tr>
+<td><strong>Production</strong></td>
+<td>Natural language into shippable artefacts, watermarked at generation</td>
+<td>Flow · Veo · Nano Banana · Lyria · Gemini for Workspace · Google Vids · SynthID</td>
+</tr>
+<tr>
+<td><strong>Agent runtimes</strong></td>
+<td>Reasoning pushed into cheap, fast models running in the background</td>
+<td>Gemini 3.8 Flash and 3.8 Flash Cyber (2 Sep 2026) · Antigravity · Jules · Gemini Enterprise</td>
+</tr>
+<tr>
+<td><strong>Research core</strong></td>
+<td>The only layer whose output is a scientific result</td>
+<td>AlphaFold 3 · Isomorphic Labs · Genie · GraphCast · GNoME · Willow</td>
+</tr>
+<tr>
+<td><strong>Bedrock</strong></td>
+<td>The layer no court order reaches</td>
+<td>TPU 8t / 8i · Ironwood · Axion Arm CPU · Kairos (up to 500MW SMR by 2035) · subsea fibre · Mandiant</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section id="s6">
+<div class="sec-head"><div class="sec-label">06 · The Two-Name Problem</div><h2>Same numbers, different conclusion</h2></div>
+<div class="prose"><p>Ed Zitron has been making the concentration argument loudly since July.</p>
+<p>On Bloomberg and in his newsletter, compiling analyst notes from UBS, Wells Fargo and Barclays.</p>
+<p>He is right about the numbers.</p>
+<p>I read what they mean differently.</p>
+<p><strong>The bear case (Zitron, as he argues it):</strong></p>
+<ul>
+<li>70%+ of AI revenue at Microsoft, Google and Amazon traces to OpenAI or Anthropic.</li>
+<li>OpenAI lost $20.9B in 2025. Neither lab pays from operating cash flow.</li>
+<li>190GW of planned capacity implies $1.6T+ in annual demand that does not exist.</li>
+<li>Conclusion: circular financing dressed as growth.</li>
+</ul>
+<p><strong>Where I land:</strong></p>
+<ul>
+<li>Pichai stated the binding constraint is supply, not demand. Fake demand doesn't come with a supply ceiling.</li>
+<li>Over half the $514B backlog converts within 24 months. A delivery schedule, not a pipeline.</li>
+<li>Third-party TPU sales and the Blackstone JV are revenue lines outside the two labs.</li>
+<li>Conclusion: the demand is real. The revenue base is narrow. Different problems.</li>
+</ul></div></section>
+<section id="s7">
+<div class="sec-head"><div class="sec-label">07 · The Two-Name Problem</div><h2>What moved this year</h2></div>
+<div class="prose"><p>Most commentary still runs on 2024 figures.</p>
+<p><strong>22 Apr 2026 — The silicon moved two generations.</strong> <span class="tag stated">Stated</span></p>
+<p>Ironwood is the seventh-generation TPU.</p>
+<p>At Cloud Next, Google split the eighth in two.</p>
+<p>TPU 8t for training, scaling to 9,600-chip superpods.</p>
+<p>TPU 8i for latency-sensitive inference.</p>
+<p><strong>18 May 2026 — The financing moved off balance sheet.</strong> <span class="tag stated">Stated</span></p>
+<p>Blackstone and Google announced a US TPU cloud joint venture.</p>
+<p>$5B initial equity. 500MW targeted for 2027. Former Google infrastructure executive Benjamin Treynor Sloss as CEO.</p>
+<p>Blackstone holds the majority. <span class="tag reported">Reported</span></p>
+<p>Google keeps the silicon relationship without carrying the capital.</p>
+<p><strong>Mid-2026 — Google started selling the chips.</strong></p>
+<p>TPUs are moving into customers' own data centres, not only Google's cloud.</p>
+<p>That dilutes multi-tenant margins.</p>
+<p>Read it as a hedge, not a mistake.</p>
+<p>Selling accelerators up front pulls revenue forward against a capital base depreciating on a fixed clock.</p>
+<p>The landlord is becoming an arms dealer.</p>
+<p><strong>5 Aug 2026 — The research layer restructured.</strong> <span class="tag stated">Stated</span></p>
+<p>Demis Hassabis became Chair of Google DeepMind and Chief Scientist of Alphabet.</p>
+<p>Koray Kavukcuoglu took day-to-day control as SVP.</p>
+<p>Jeff Dean left after 27 years to found Discovery Loop with Sanjay Ghemawat, Oriol Vinyals and Quoc Le.</p>
+<p>Alphabet is a founding investor and its cloud provider.</p>
+<p>Alphabet shares fell roughly 4–5% on the day. <span class="tag reported">Reported</span></p>
+<p>Read the structure, not the departure.</p>
+<p>When the research layer spins out, Alphabet funds it and rents it capacity.</p>
+<p>The pattern doesn't stop at two names.</p>
+<p>It reproduces.</p></div></section>
+<section id="s8">
+<div class="sec-head"><div class="sec-label">08 · The Two-Name Problem</div><h2>Four reasons this reading is wrong</h2></div>
+<div class="prose"><p>If an argument only works when you skip the objections, it isn't an argument.</p>
+<p><strong>01 Anchor tenants build infrastructure.</strong></p>
+<p>Nobody finances a build this size against a long tail of small customers.</p>
+<p>Ports, utilities and data centres all began with concentrated offtake.</p>
+<p>Concentration may simply be what a young infrastructure business looks like.</p>
+<p><strong>02 The conversion clock is fast.</strong></p>
+<p>Over half the backlog converts within 24 months.</p>
+<p>That undercuts my own "contracted, not collected" framing.</p>
+<p>A delivery problem, not a credibility problem.</p>
+<p><strong>03 The numbers are estimates.</strong></p>
+<p>The 27% and 48% figures are UBS models, not filings.</p>
+<p>If they're materially off, the concentration argument weakens with them.</p>
+<p><strong>04 Cloud is not the whole company.</strong></p>
+<p>Google Cloud was 20.7% of Alphabet's Q2 revenue — $24.768B of $119.8B. <span class="tag filed">Filed</span></p>
+<p>Advertising still funds everything.</p>
+<p>Concentration inside a segment is not concentration inside the company.</p></div></section>
+<section id="s9">
+<div class="sec-head"><div class="sec-label">09 · The Two-Name Problem</div><h2>If you depend on one</h2></div>
+<div class="prose"><p>Pick any infrastructure supplier for a five-year horizon and you're taking a position on its revenue base.</p>
+<p>Cloud or on-prem.</p>
+<p>Ask whose revenue funds the roadmap you're relying on.</p>
+<p>Ask what proportion.</p>
+<p>Ask whether capacity promised for 2027 is already committed to someone larger.</p>
+<p>Standard due diligence for any supplier you'll depend on for five years.</p>
+<p>We just skip it for hyperscalers.</p>
+<p>The numbers are large enough to feel like weather.</p>
+<p><strong>Companion piece:</strong> <em><a href="https://gauravchannagiri.github.io/articles/the-silent-landlord/">The Silent Landlord</a></em> covers the same company from the other side: not who Google Cloud depends on, but how the ecosystem keeps you in.</p></div></section>
+<section id="sources">
+<div class="sec-head"><div class="sec-label">Sources</div><h2>Sources</h2></div>
+<div class="prose"><ul>
+<li>Alphabet Q2 2026 results and 10-Q: revenue $119.8B (+24%), Cloud $24.768B (+82%), backlog $514B ($513.9B) up from $460B (Q1 2026) and $106B (Q2 2025), capex $44.9B, FCF −$5.9B, guidance $195–205B, EPS $9.11 including ~$99B pre-tax equity gains, SpaceX holding valued at $94.1B. <span class="tag filed">Filed</span> <a href="https://sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm" rel="noopener">sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm</a></li>
+<li>Alphabet Q2 2026 earnings call: supply as the binding constraint; &gt;50% of backlog converting within 24 months. <span class="tag stated">Stated</span> abc.xyz/investor</li>
+<li>UBS (Stephen Ju) estimates via Bloomberg, 31 Jul 2026: 27% → 48%+, &gt;$124B, Anthropic $76B. <span class="tag estimate">Estimate</span> ppc.land/google-cloud-faces-48-revenue-reliance-on-openai-and-anthropic-in-2027/</li>
+<li>EPS breakdown (~$6.26/share; ~$2.85 vs $2.89). <span class="tag reported">Reported</span> <a href="https://top1markets.com/news/google-stock-q2-2026-earnings-analysis" rel="noopener">top1markets.com/news/google-stock-q2-2026-earnings-analysis</a></li>
+<li>Blackstone press release, 18 May 2026. <span class="tag stated">Stated</span> Majority ownership and ~$25B with leverage per WSJ / Bloomberg. <span class="tag reported">Reported</span> <a href="https://blackstone.com/news/press/blackstone-announces-joint-venture-with-google-to-create-new-tpu-cloud/" rel="noopener">blackstone.com/news/press/blackstone-announces-joint-venture-with-google-to-create-new-tpu-cloud/</a></li>
+<li>Google–SpaceX compute, $920M/month, Oct 2026 – Jun 2029. <span class="tag filed">Filed</span> SpaceX FWP / S-1 disclosure, 5 Jun 2026: <a href="https://sec.gov/Archives/edgar/data/1181412/000162828026041150/spacexagreementfwp.htm" rel="noopener">sec.gov/Archives/edgar/data/1181412/000162828026041150/spacexagreementfwp.htm</a> · CNBC: <a href="https://cnbc.com/2026/06/05/google-to-pay-spacex-920-million-a-month-for-xai-compute-capacity.html" rel="noopener">cnbc.com/2026/06/05/google-to-pay-spacex-920-million-a-month-for-xai-compute-capacity.html</a></li>
+<li>Alphabet up to $40B in Anthropic, Apr 2026; up to 1M TPUs. <span class="tag stated">Stated</span></li>
+<li>United States v. Google filings (2025): ~14% Anthropic stake, capped at 15%. <span class="tag filed">Filed</span></li>
+<li>Google Cloud Next, 22 Apr 2026: TPU 8t / 8i, 9,600-chip superpods. <span class="tag stated">Stated</span> <a href="https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/" rel="noopener">blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/tpus-8t-8i-cloud-next/</a></li>
+<li>Gemini 3.8 Flash and 3.8 Flash Cyber, 2 Sep 2026. <span class="tag stated">Stated</span> <a href="https://blog.google" rel="noopener">blog.google</a></li>
+<li>Kairos Power: up to 500MW of SMR capacity by 2035. <span class="tag stated">Stated</span> <a href="https://kairospower.com" rel="noopener">kairospower.com</a></li>
+<li>Google DeepMind leadership changes, 5 Aug 2026; share move ~4–5%. <span class="tag reported">Reported</span> <a href="https://cnbc.com/2026/08/05/google-chief-scientist-jeff-dean-leaving-company-after-27-years.html" rel="noopener">cnbc.com/2026/08/05/google-chief-scientist-jeff-dean-leaving-company-after-27-years.html</a></li>
+<li>Ed Zitron, Bloomberg, 31 Jul 2026, and wheresyoured.at. <span class="tag opinion">Opinion</span></li>
+</ul>
+<p>The demand is real.</p>
+<p>The constraint is physical.</p>
+<p>The revenue base is two names deep.</p>
+<p>All three can be true at once.</p>
+<p><em>Personal analysis. Public sources only. Not the view of any employer.</em></p></div></section>
+
+<div class="closer"><p>The demand is real. The constraint is physical. The revenue base is two names deep. All three can be true at once.</p></div>
+<footer>Gaurav Channagiri · The Autonomy Loop 04 · October 2026<br>Personal analysis. Public sources only. Not the view of any employer.</footer></div></body></html>

@@ -1,0 +1,1255 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Loop Left the Chat Window · The Autonomy Loop</title>
+<meta name="description" content="Agents broke the token bill. The constraint nobody has priced is your data. A teardown of inference economics, the agent stack, the SaaS toll gate, and why AI-ready is not agent-ready.">
+<meta name="author" content="Gaurav Channagiri">
+<link rel="canonical" href="https://gauravchannagiri.github.io/articles/the-loop-left-the-chat-window/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gauravchannagiri.github.io/articles/the-loop-left-the-chat-window/">
+<meta property="og:title" content="The Loop Left the Chat Window · The Autonomy Loop">
+<meta property="og:description" content="Agents broke the token bill. The constraint nobody has priced is your data. A teardown of inference economics, the agent stack, the SaaS toll gate, and why AI-ready is not agent-ready.">
+<meta property="og:image" content="https://gauravchannagiri.github.io/articles/the-loop-left-the-chat-window/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Loop Left the Chat Window · The Autonomy Loop">
+<meta name="twitter:description" content="Agents broke the token bill. The constraint nobody has priced is your data. A teardown of inference economics, the agent stack, the SaaS toll gate, and why AI-ready is not agent-ready.">
+<meta name="twitter:image" content="https://gauravchannagiri.github.io/articles/the-loop-left-the-chat-window/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"><meta name="theme-color" content="#0a0a0c"><style>
+:root{
+  --ink:#0a0a0c;
+  --ink-2:#111116;
+  --ink-3:#17171e;
+  --line:#26262f;
+  --line-soft:#1d1d25;
+  --paper:#f2efe9;
+  --paper-dim:#b9b5ad;
+  --paper-faint:#78756e;
+  --amber:#ffab27;
+  --amber-deep:#c97e12;
+  --cyan:#4fd6d2;
+  --rose:#ff5d5d;
+  --violet:#a78bfa;
+  --green:#5fd08a;
+  --display:'Bebas Neue',Impact,sans-serif;
+  --body:'Newsreader',Georgia,serif;
+  --mono:'DM Mono',ui-monospace,Menlo,monospace;
+  --maxw:760px;
+  --wide:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--body);
+  font-size:19px;
+  line-height:1.68;
+  font-weight:300;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;height:auto}
+
+/* ---------- progress ---------- */
+#prog{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--amber),var(--cyan));z-index:200;transition:width .1s linear}
+
+/* ---------- layout ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.wide{max-width:var(--wide);margin:0 auto;padding:0 24px}
+section{padding:0}
+.block{margin:0 0 30px}
+
+/* ---------- hero ---------- */
+header.hero{
+  position:relative;
+  padding:90px 0 60px;
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+header.hero::before{
+  content:'';position:absolute;top:-30%;left:50%;transform:translateX(-50%);
+  width:900px;height:900px;
+  background:radial-gradient(circle,rgba(255,171,39,.13) 0%,rgba(255,171,39,0) 62%);
+  pointer-events:none;
+}
+.kicker{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:26px;position:relative;
+}
+.kicker .sep{color:var(--paper-faint);margin:0 10px}
+h1{
+  font-family:var(--display);
+  font-size:clamp(52px,12.5vw,116px);
+  line-height:.87;
+  letter-spacing:.005em;
+  font-weight:400;
+  margin-bottom:26px;
+  position:relative;
+}
+h1 .glow{color:var(--amber)}
+.standfirst{
+  font-size:clamp(20px,4.4vw,25px);
+  line-height:1.45;
+  color:var(--paper-dim);
+  font-weight:300;
+  max-width:620px;
+  position:relative;
+}
+.byline{
+  margin-top:38px;padding-top:22px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:12px;color:var(--paper-faint);
+  line-height:1.9;position:relative;
+}
+.byline b{color:var(--paper-dim);font-weight:400}
+
+/* ---------- provenance ---------- */
+.chip{
+  display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;padding:2.5px 7px;border-radius:3px;vertical-align:2px;
+  margin:0 3px;white-space:nowrap;font-weight:500;
+}
+.c-filed{background:rgba(79,214,210,.14);color:var(--cyan);border:1px solid rgba(79,214,210,.3)}
+.c-stated{background:rgba(95,208,138,.13);color:var(--green);border:1px solid rgba(95,208,138,.3)}
+.c-reported{background:rgba(255,171,39,.12);color:var(--amber);border:1px solid rgba(255,171,39,.28)}
+.c-estimate{background:rgba(167,139,250,.13);color:var(--violet);border:1px solid rgba(167,139,250,.3)}
+.c-disputed{background:rgba(255,93,93,.12);color:var(--rose);border:1px solid rgba(255,93,93,.3)}
+
+.legend{
+  display:flex;flex-wrap:wrap;gap:9px 16px;padding:20px 22px;margin:34px 0 0;
+  background:var(--ink-2);border:1px solid var(--line);border-radius:6px;
+  font-family:var(--mono);font-size:11px;color:var(--paper-faint);line-height:1.5;
+}
+.legend div{display:flex;align-items:flex-start;gap:7px;flex:1 1 190px}
+
+/* ---------- section heads ---------- */
+.sect{padding:74px 0 0;position:relative}
+.snum{
+  font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--amber);
+  margin-bottom:14px;text-transform:uppercase;
+}
+h2{
+  font-family:var(--display);font-size:clamp(34px,8vw,58px);line-height:.95;
+  font-weight:400;margin-bottom:22px;letter-spacing:.008em;
+}
+h3{
+  font-family:var(--mono);font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--cyan);margin:44px 0 16px;font-weight:500;
+}
+h4{
+  font-family:var(--body);font-size:22px;font-weight:500;margin:32px 0 12px;color:var(--paper);
+}
+p{margin-bottom:22px}
+p a,.src a{color:var(--amber);text-decoration:none;border-bottom:1px solid rgba(255,171,39,.3)}
+p a:hover{border-bottom-color:var(--amber)}
+strong{font-weight:600;color:#fff}
+em{font-style:italic;color:var(--paper-dim)}
+
+.lede{font-size:22px;line-height:1.55;color:var(--paper-dim);border-left:2px solid var(--amber);padding-left:22px;margin-bottom:34px}
+
+ul,ol{margin:0 0 24px 22px}
+li{margin-bottom:11px;padding-left:4px}
+li::marker{color:var(--amber)}
+
+/* ---------- pull ---------- */
+.pull{
+  font-family:var(--display);font-size:clamp(28px,6.5vw,44px);line-height:1.04;
+  color:var(--amber);margin:52px 0;padding:32px 0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  letter-spacing:.01em;
+}
+
+/* ---------- callouts ---------- */
+.box{
+  background:var(--ink-2);border:1px solid var(--line);border-radius:7px;
+  padding:26px 26px 8px;margin:34px 0;
+}
+.box .bl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:14px;display:block;
+}
+.box.other{border-left:3px solid var(--rose)}
+.box.other .bl{color:var(--rose)}
+.box.mech{border-left:3px solid var(--cyan)}
+.box.mech .bl{color:var(--cyan)}
+.box.ask{border-left:3px solid var(--green)}
+.box.ask .bl{color:var(--green)}
+.box p:last-child{margin-bottom:22px}
+.box ul{margin-bottom:22px}
+.box{font-size:17.5px;line-height:1.62}
+
+/* ---------- stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:7px;overflow:hidden;margin:36px 0}
+.stat{background:var(--ink-2);padding:22px 18px}
+.stat .n{font-family:var(--display);font-size:40px;line-height:1;color:var(--amber);margin-bottom:8px}
+.stat .n.cy{color:var(--cyan)}
+.stat .n.rs{color:var(--rose)}
+.stat .l{font-family:var(--mono);font-size:10.5px;line-height:1.5;color:var(--paper-faint);text-transform:uppercase;letter-spacing:.05em}
+
+/* ---------- figure ---------- */
+figure{margin:44px 0;background:var(--ink-2);border:1px solid var(--line);border-radius:7px;padding:26px 22px 18px;overflow:hidden}
+figcaption{font-family:var(--mono);font-size:11.5px;line-height:1.6;color:var(--paper-faint);margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft)}
+figcaption b{color:var(--paper-dim);font-weight:400}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:32px 0;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:12.5px;min-width:520px}
+th{
+  text-align:left;padding:11px 12px;border-bottom:1px solid var(--amber);
+  color:var(--amber);font-weight:500;text-transform:uppercase;letter-spacing:.09em;font-size:10.5px;
+}
+td{padding:11px 12px;border-bottom:1px solid var(--line-soft);color:var(--paper-dim);vertical-align:top;line-height:1.55}
+td b{color:#fff;font-weight:500}
+tr:hover td{background:rgba(255,255,255,.017)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin:30px 0 0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;font-family:var(--mono);font-size:11.5px;letter-spacing:.07em;
+  padding:9px 15px;border:1px solid var(--line);background:var(--ink-2);color:var(--paper-faint);
+  border-radius:20px;cursor:pointer;transition:.16s;white-space:nowrap;text-transform:uppercase;
+}
+.tab:hover{border-color:var(--paper-faint);color:var(--paper-dim)}
+.tab.on{background:var(--amber);color:#000;border-color:var(--amber);font-weight:500}
+.pane{display:none;background:var(--ink-2);border:1px solid var(--line);border-top:none;border-radius:0 0 7px 7px;padding:28px 24px 8px;font-size:17.5px}
+.pane.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pane .role{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+.pane .thesis{font-family:var(--display);font-size:30px;line-height:1.05;color:var(--amber);margin-bottom:20px}
+
+/* ---------- calculator ---------- */
+.calc{background:var(--ink-3);border:1px solid var(--line);border-radius:7px;padding:26px 22px;margin:38px 0}
+.calc .ct{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+.calc .cd{font-family:var(--mono);font-size:12px;color:var(--paper-faint);margin-bottom:24px;line-height:1.6}
+.row{margin-bottom:20px}
+.row label{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:11.5px;color:var(--paper-dim);margin-bottom:9px;gap:12px}
+.row label .v{color:var(--amber);font-size:13px;font-weight:500}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:3px;background:var(--line);
+  border-radius:2px;outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--amber);cursor:pointer;border:3px solid var(--ink-3);box-shadow:0 0 0 1px var(--amber);
+}
+input[type=range]::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;background:var(--amber);cursor:pointer;
+  border:3px solid var(--ink-3);box-shadow:0 0 0 1px var(--amber);
+}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:26px}
+.out div{background:var(--ink-2);padding:18px 14px}
+.out .ol{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-faint);margin-bottom:7px;line-height:1.4}
+.out .ov{font-family:var(--display);font-size:29px;line-height:1;color:var(--amber)}
+.out .ov.cy{color:var(--cyan)}
+.out .ov.gr{color:var(--green)}
+.out .ov.rs{color:var(--rose)}
+.verdict{margin-top:20px;padding:16px 18px;border-radius:6px;font-family:var(--mono);font-size:12.5px;line-height:1.65;background:rgba(255,171,39,.07);border:1px solid rgba(255,171,39,.24);color:var(--paper-dim)}
+.verdict b{color:var(--amber);font-weight:500}
+
+/* ---------- ladder ---------- */
+.ladder{margin:36px 0;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.rung{display:flex;gap:16px;padding:20px 20px;border-bottom:1px solid var(--line-soft);background:var(--ink-2);align-items:flex-start}
+.rung:last-child{border-bottom:none}
+.rung .rn{font-family:var(--display);font-size:30px;line-height:.9;color:var(--paper-faint);flex:0 0 34px}
+.rung.ok .rn{color:var(--cyan)}
+.rung.hard .rn{color:var(--amber)}
+.rung.wall{background:rgba(255,93,93,.045)}
+.rung.wall .rn{color:var(--rose)}
+.rung .rb{flex:1;min-width:0}
+.rung .rt{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#fff;margin-bottom:7px}
+.rung .rx{font-size:16.5px;line-height:1.58;color:var(--paper-dim)}
+.rung .tagx{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-left:8px;vertical-align:2px}
+.t-read{background:rgba(79,214,210,.14);color:var(--cyan)}
+.t-write{background:rgba(255,93,93,.14);color:var(--rose)}
+
+/* ---------- footnote / source ---------- */
+.src{font-family:var(--mono);font-size:12px;line-height:1.75;color:var(--paper-faint)}
+.src li{margin-bottom:9px}
+.rule{height:1px;background:var(--line);margin:74px 0 0}
+footer{padding:60px 0 90px;font-family:var(--mono);font-size:11.5px;color:var(--paper-faint);line-height:1.9}
+footer b{color:var(--paper-dim);font-weight:400}
+
+/* ---------- toc ---------- */
+.toc{background:var(--ink-2);border:1px solid var(--line);border-radius:7px;padding:26px 24px;margin:46px 0}
+.toc .tl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:18px}
+.toc ol{margin:0;list-style:none;counter-reset:t}
+.toc li{counter-increment:t;margin-bottom:0;padding-left:0;border-bottom:1px solid var(--line-soft)}
+.toc li:last-child{border-bottom:none}
+.toc a{display:flex;gap:14px;padding:10px 0;color:var(--paper-dim);text-decoration:none;font-size:16.5px;transition:.15s}
+.toc a::before{content:counter(t,decimal-leading-zero);font-family:var(--mono);font-size:11px;color:var(--paper-faint);flex:0 0 24px;padding-top:5px}
+.toc a:hover{color:var(--amber)}
+
+/* ---------- svg helpers ---------- */
+.sl{font-family:'DM Mono',monospace;font-size:10px;fill:#78756e;letter-spacing:.06em}
+.sv{font-family:'Bebas Neue',sans-serif;font-size:18px;fill:#f2efe9}
+.st{font-family:'DM Mono',monospace;font-size:11px;fill:#b9b5ad}
+
+@media(max-width:640px){
+  body{font-size:18px}
+  .wrap,.wide{padding:0 18px}
+  header.hero{padding:60px 0 44px}
+  .sect{padding:58px 0 0}
+  figure{padding:18px 14px 14px}
+  .box{padding:22px 19px 4px;font-size:17px}
+  .pane{padding:24px 19px 6px;font-size:17px}
+  .stat .n{font-size:34px}
+}
+
+.prose p{margin:0 0 14px} .prose h3{margin:28px 0 10px;font-size:20px;font-weight:600;color:var(--paper)}
+.prose ul,.prose ol{margin:0 0 16px 22px} .prose li{margin:0 0 8px}
+.prose a{color:var(--amber);text-underline-offset:3px;word-break:break-word}
+.prose blockquote{border-left:3px solid var(--amber);padding:6px 0 6px 18px;margin:18px 0;color:var(--paper-dim)}
+.tblw{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--line);border-radius:12px}
+.tblw table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tblw th{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--paper-dim);text-align:left;font-weight:500;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tblw td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tblw tr:last-child td{border-bottom:0}
+.tblw thead:empty,.tblw thead tr:only-child th:empty{display:none}
+figure.xf{margin:28px auto} figure.xf svg{display:block;width:100%;height:auto}
+figure.xf figcaption{font-size:14px;color:var(--paper-dim);margin-top:12px;line-height:1.55}
+@media(max-width:600px){.tblw table{font-size:14px} .tblw th,.tblw td{padding:9px 10px}}
+
+#prog{display:none} .tblw table{font-family:var(--body)} .tblw th{font-family:var(--mono)}
+.prose h3{font-family:var(--display);font-size:28px;letter-spacing:1px;font-weight:400}
+</style></head><body>
+<header class="hero"><div class="wrap">
+<div class="kicker">The Autonomy Loop <span class="sep">/</span> No. 05 <span class="sep">/</span> October 2026</div>
+<h1>The Loop Left<br>The <span class="glow">Chat Window</span></h1>
+<p class="standfirst">Agents broke the token bill. The constraint nobody has priced is your data.</p>
+<div class="byline"><b>By</b> Gaurav Channagiri<br><b>Reading time</b> ~30 minutes<br><b>Position</b> none. This piece doesn't argue for cloud, on-prem or any vendor.</div>
+<div class="box other" style="margin:26px 0 0"><span class="bl">Disclosure</span><p style="margin-bottom:14px">Written in a personal capacity. Not the analysis of, or on behalf of, any employer or vendor. Every figure comes from a public source, cited at the end. No non-public, customer or commercial information was used. No vendor, product or platform is recommended.</p></div>
+<div class="legend">
+<div><span class="chip c-filed">Filed</span> Primary document: filing, transcript, official release.</div>
+<div><span class="chip c-stated">Stated</span> Said on the record by a named person.</div>
+<div><span class="chip c-reported">Reported</span> Credible secondary reporting or research.</div>
+<div><span class="chip c-estimate">Estimate</span> Modelled or forecast. Directional.</div>
+<div><span class="chip c-disputed">Contested</span> Sources disagree.</div>
+</div></div></header>
+<div class="wrap"><div class="prose lede" style="padding-top:40px"><p>Gartner says agentic tasks consume 5–30× the tokens of a chatbot.</p>
+<p>Bills went up anyway, even as the price of each token kept falling.</p>
+<p>Chat was the demo.</p>
+<p>Agents are the bill.</p>
+<p>And the constraint nobody has priced isn't compute.</p>
+<p>It's whether your data can survive something that acts.</p></div>
+<section class="sect" id="s0">
+<div class="snum">00</div>
+<h2>I was watching the wrong scoreboard</h2>
+<div class="prose"><p>For two years I followed this as a league table.</p>
+<p>Which model topped which benchmark.</p>
+<p>Whether open weights had closed the gap.</p>
+<p>It turned out to be almost entirely beside the point.</p>
+<p>The arguments at the top of the industry are no longer about which model is best.</p>
+<p>They're about who owns the loop once the model can act.</p>
+<p>Underneath that sits a set of physical and financial constraints nobody selling you an AI strategy wants to explain.</p>
+<p>This piece takes no side on cloud versus owned infrastructure.</p>
+<p>Both are right answers to different questions.</p>
+<p>What it does take a side on: most organisations are optimising the wrong variable.</p>
+<p><strong>Contents</strong>
+01 The shift · 02 Anatomy of an agent · 03 The token cascade · 04 What a token actually costs · 05 Where it runs · 06 The physical floor · 07 Five people, one disagreement · 08 The toll gate · 09 Legibility · 10 Australia · 11 AI-ready is not agent-ready · 12 Three audiences · Sources</p></div>
+</section>
+<div class="toc"><div class="tl">Contents</div><ol><li><a href="#s1">Chat was the demo</a></li><li><a href="#s2">What an agent is actually made of</a></li><li><a href="#s3">Why cheaper tokens didn&#x27;t make your bill smaller</a></li><li><a href="#s4">What a token actually costs</a></li><li><a href="#s5">Where it runs</a></li><li><a href="#s6">Everything above sits on a memory constraint</a></li><li><a href="#s7">Five people, one disagreement</a></li><li><a href="#s8">The toll gate</a></li><li><a href="#s9">Capability went up. Auditability didn&#x27;t.</a></li><li><a href="#s10">Australia: the number is not one number</a></li><li><a href="#s11">AI-ready is not agent-ready</a></li><li><a href="#s12">Three audiences</a></li><li><a href="#s13">Sources</a></li></ol></div>
+<section class="sect" id="s1">
+<div class="snum">01</div>
+<h2>Chat was the demo</h2>
+<div class="prose"><p>A chatbot returns text and stops.</p>
+<p>An agent plans, calls tools, reads and writes to systems of record, checks its own work and keeps going after you close the laptop.</p>
+<p>Not a better chatbot.</p>
+<p>A different economic object.</p>
+<p>Three things change at once.</p>
+<p><strong>The unit of work.</strong>
+A chatbot's unit is the question.
+An agent's unit is the task.
+The user pressed one button.
+The system did forty things.</p>
+<p><strong>The failure mode.</strong>
+A wrong answer in chat is an embarrassment.
+A wrong action with write access is a corrupted record, a wrongly approved claim, a purchase order that shouldn't exist.
+The human is no longer in the path by default.
+They have to be put there.</p>
+<p><strong>The dependency.</strong>
+A chatbot needs a model.
+An agent needs a model, reachable data, permission to act, a log and a way to undo.
+The model is the cheapest and most replaceable part of that list.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Chatbot</th>
+<th>Agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flow</td>
+<td>User → model → text</td>
+<td>Task → plan → act → verify → loop → write back</td>
+</tr>
+<tr>
+<td>Model calls</td>
+<td>1</td>
+<td>Many per task</td>
+</tr>
+<tr>
+<td>Risk bounded by</td>
+<td>One answer</td>
+<td>How often the loop runs and what it can touch</td>
+</tr>
+</tbody>
+</table></div>
+<p>You can see it in the traffic.</p>
+<p>On OpenRouter, a neutral multi-vendor routing layer, weekly volume grew from about 5 trillion tokens in late 2025 to 25 trillion by late May 2026. <span class="chip c-stated">Stated</span></p>
+<p>Agentic traffic overtook human traffic around 1 February 2026. <span class="chip c-reported">Reported</span></p>
+<p>That crossover is the moment the industry's cost base changed shape.</p>
+<p>Almost nobody wrote about it.</p></div>
+<figure>
+    <svg viewBox="0 0 700 300" role="img" aria-label="Diagram comparing a single-call chatbot with a multi-call agent loop">
+      <text x="10" y="20" class="sl">A · CHATBOT — ONE CALL, ONE ANSWER</text>
+      <line x1="10" y1="30" x2="690" y2="30" stroke="#26262f"/>
+      <rect x="14" y="48" width="96" height="42" rx="4" fill="#17171e" stroke="#26262f"/>
+      <text x="62" y="74" class="st" text-anchor="middle">User</text>
+      <line x1="112" y1="69" x2="196" y2="69" stroke="#4fd6d2" stroke-width="1.4" marker-end="url(#ac)"/>
+      <rect x="200" y="48" width="110" height="42" rx="4" fill="#17171e" stroke="#4fd6d2"/>
+      <text x="255" y="74" class="st" text-anchor="middle" fill="#4fd6d2">Model</text>
+      <line x1="312" y1="69" x2="396" y2="69" stroke="#4fd6d2" stroke-width="1.4" marker-end="url(#ac)"/>
+      <rect x="400" y="48" width="110" height="42" rx="4" fill="#17171e" stroke="#26262f"/>
+      <text x="455" y="74" class="st" text-anchor="middle">Text out</text>
+      <text x="530" y="74" class="sl" fill="#5fd08a">cost ≈ 1 call</text>
+
+      <text x="10" y="132" class="sl">B · AGENT — PLAN, ACT, VERIFY, REPEAT</text>
+      <line x1="10" y1="142" x2="690" y2="142" stroke="#26262f"/>
+      <rect x="14" y="160" width="86" height="38" rx="4" fill="#17171e" stroke="#26262f"/>
+      <text x="57" y="184" class="st" text-anchor="middle">Task</text>
+      <line x1="102" y1="179" x2="152" y2="179" stroke="#ffab27" stroke-width="1.4" marker-end="url(#aa)"/>
+
+      <rect x="156" y="152" width="92" height="54" rx="4" fill="#1a1508" stroke="#ffab27"/>
+      <text x="202" y="174" class="st" text-anchor="middle" fill="#ffab27">Plan</text>
+      <text x="202" y="192" class="sl" text-anchor="middle">reason</text>
+
+      <line x1="250" y1="179" x2="292" y2="179" stroke="#ffab27" stroke-width="1.4" marker-end="url(#aa)"/>
+      <rect x="296" y="152" width="92" height="54" rx="4" fill="#1a1508" stroke="#ffab27"/>
+      <text x="342" y="174" class="st" text-anchor="middle" fill="#ffab27">Act</text>
+      <text x="342" y="192" class="sl" text-anchor="middle">tool call</text>
+
+      <line x1="390" y1="179" x2="432" y2="179" stroke="#ffab27" stroke-width="1.4" marker-end="url(#aa)"/>
+      <rect x="436" y="152" width="92" height="54" rx="4" fill="#1a1508" stroke="#ffab27"/>
+      <text x="482" y="174" class="st" text-anchor="middle" fill="#ffab27">Verify</text>
+      <text x="482" y="192" class="sl" text-anchor="middle">check</text>
+
+      <path d="M 482 210 L 482 238 L 202 238 L 202 210" fill="none" stroke="#ffab27" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#aa)"/>
+      <text x="342" y="254" class="sl" text-anchor="middle" fill="#ffab27">loop — many model calls per task</text>
+
+      <line x1="530" y1="179" x2="572" y2="179" stroke="#ff5d5d" stroke-width="1.4" marker-end="url(#ar)"/>
+      <rect x="576" y="152" width="110" height="54" rx="4" fill="#1a0d0d" stroke="#ff5d5d"/>
+      <text x="631" y="174" class="st" text-anchor="middle" fill="#ff5d5d">Write back</text>
+      <text x="631" y="192" class="sl" text-anchor="middle">system of record</text>
+
+      <text x="10" y="286" class="sl">The red box is the whole story. Everything hard about agents lives there.</text>
+      <defs>
+        <marker id="ac" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#4fd6d2"/></marker>
+        <marker id="aa" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#ffab27"/></marker>
+        <marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#ff5d5d"/></marker>
+      </defs>
+    </svg>
+    <figcaption><b>Fig. 1</b> — The structural difference. A chatbot's cost and risk are bounded by a single call. An agent's are bounded only by how many times the loop runs and what it is permitted to touch at the end of it.</figcaption>
+  </figure></section>
+<section class="sect" id="s2">
+<div class="snum">02</div>
+<h2>What an agent is actually made of</h2>
+<div class="prose"><p>Six components.</p>
+<p>The model is one of them.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 · Harness</td>
+<td>Orchestration code. What runs, in what order, with what retries. Yours.</td>
+</tr>
+<tr>
+<td>2 · Context</td>
+<td>What the agent can see. Every token here is paid for on every call.</td>
+</tr>
+<tr>
+<td>3 · Memory</td>
+<td>What persists between runs. Almost always underbuilt.</td>
+</tr>
+<tr>
+<td>4 · Model</td>
+<td>The reasoning engine. The most discussed and most replaceable layer.</td>
+</tr>
+<tr>
+<td>5 · Action space</td>
+<td>What it may do. Which systems, which records, under whose identity.</td>
+</tr>
+<tr>
+<td>6 · Evals and logs</td>
+<td>How you know it worked and prove what it did.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Layer 4 is the whole public conversation.</p>
+<p>Layers 1, 2, 3, 5 and 6 are where the money goes and where the difference is built.</p>
+<p><strong>Context is a budget, not a setting.</strong></p>
+<p>Every token in the window is processed on every call.</p>
+<p>Not once.</p>
+<p>Every time.</p>
+<p>Prompt caching helps, but it's brittle.</p>
+<p>One public issue report described a system prompt with a live date-and-time field.</p>
+<p>The string changed every turn.</p>
+<p>So the cache key changed every turn.</p>
+<p>So a very large context was reprocessed at full price on every request. <span class="chip c-reported">Reported</span></p>
+<p>Most applications spend context like it's someone else's money.</p></div>
+<figure>
+    <svg viewBox="0 0 700 340" role="img" aria-label="Six-layer agent architecture">
+      <rect x="10" y="14" width="680" height="46" rx="5" fill="#17171e" stroke="#a78bfa"/>
+      <text x="24" y="34" class="st" fill="#a78bfa">1 · HARNESS</text>
+      <text x="24" y="52" class="sl">The orchestration code. Decides what runs, in what order, with what retries. Yours.</text>
+
+      <rect x="10" y="66" width="680" height="46" rx="5" fill="#17171e" stroke="#4fd6d2"/>
+      <text x="24" y="86" class="st" fill="#4fd6d2">2 · CONTEXT</text>
+      <text x="24" y="104" class="sl">What the agent can see. Retrieval, documents, prior turns. Every token here is paid for on every call.</text>
+
+      <rect x="10" y="118" width="680" height="46" rx="5" fill="#17171e" stroke="#4fd6d2"/>
+      <text x="24" y="138" class="st" fill="#4fd6d2">3 · MEMORY</text>
+      <text x="24" y="156" class="sl">What persists between runs. The thing that turns a tool into an employee. Almost always underbuilt.</text>
+
+      <rect x="10" y="170" width="680" height="46" rx="5" fill="#1a1508" stroke="#ffab27" stroke-width="1.5"/>
+      <text x="24" y="190" class="st" fill="#ffab27">4 · MODEL</text>
+      <text x="24" y="208" class="sl">The reasoning engine. Rented or hosted. The most discussed and most replaceable layer in the stack.</text>
+
+      <rect x="10" y="222" width="680" height="46" rx="5" fill="#1a0d0d" stroke="#ff5d5d"/>
+      <text x="24" y="242" class="st" fill="#ff5d5d">5 · ACTION SPACE</text>
+      <text x="24" y="260" class="sl">What it is permitted to do. Which systems, which records, read or write, under whose identity.</text>
+
+      <rect x="10" y="274" width="680" height="46" rx="5" fill="#17171e" stroke="#5fd08a"/>
+      <text x="24" y="294" class="st" fill="#5fd08a">6 · EVALS &amp; LOGS</text>
+      <text x="24" y="312" class="sl">How you know it worked, and how you prove what it did. The layer that decides if it ever reaches production.</text>
+    </svg>
+    <figcaption><b>Fig. 2</b> — Six layers. Layer 4 is the one the entire public conversation is about. Layers 1, 2, 3, 5 and 6 are where the money goes, where the risk sits, and where competitive difference is actually built.</figcaption>
+  </figure></section>
+<section class="sect" id="s3">
+<div class="snum">03</div>
+<h2>Why cheaper tokens didn&#x27;t make your bill smaller</h2>
+<div class="prose"><p>Stanford HAI measured GPT-3.5-level inference getting roughly 280× cheaper in two years. <span class="chip c-reported">Reported</span></p>
+<p>a16z puts the decline at around 10× a year at constant capability. <span class="chip c-estimate">Estimate</span></p>
+<p>Enterprise AI bills went up anyway.</p>
+<p>Not a paradox.</p>
+<p>A volume story sitting on a price story.</p>
+<p>Volume is winning.</p>
+<p>Three multipliers stack.</p>
+<p><strong>One: reasoning.</strong>
+Thinking models generate intermediate tokens you never see.
+You pay for all of them.</p>
+<p><strong>Two: the loop.</strong>
+One question is one call.
+One agentic task is many calls: reason, act, verify, retry.</p>
+<p><strong>Three: model class.</strong>
+Gartner estimates provider cost per token for planning-and-learning models runs 8–10× that of models built for basic linear workflows. <span class="chip c-estimate">Estimate</span>
+Its scenario: a task costing a chatbot $0.01 could cost an agent up to $1.50. <span class="chip c-estimate">Estimate</span>
+In August 2026 it forecast inference cost per agentic workflow rising more than fivefold through 2028. <span class="chip c-estimate">Estimate</span></p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Multiplier</th>
+<th>Figure</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tokens per task, agent vs chatbot</td>
+<td>5–30×</td>
+<td>Gartner <span class="chip c-estimate">Estimate</span></td>
+</tr>
+<tr>
+<td>Tokens, multi-agent system vs chat</td>
+<td>~15×</td>
+<td>Anthropic <span class="chip c-stated">Stated</span></td>
+</tr>
+<tr>
+<td>Cost per agentic task vs chatbot</td>
+<td>up to 150×</td>
+<td>Gartner <span class="chip c-estimate">Estimate</span></td>
+</tr>
+<tr>
+<td>Fall in cost at constant capability</td>
+<td>~280× in two years</td>
+<td>Stanford HAI <span class="chip c-reported">Reported</span></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Worked example: the cascade</strong></p>
+<p>Same business, same 500 tasks a day, 2,000 tokens per call, $3.00 per million tokens. Only the calls per task change.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Calls per task</th>
+<th>Tokens / month</th>
+<th>Cost / month</th>
+<th>Cost / year</th>
+<th>Cost per task</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 (chat)</td>
+<td>30M</td>
+<td>$90</td>
+<td>~$1.1K</td>
+<td>$0.006</td>
+</tr>
+<tr>
+<td>15 (agent)</td>
+<td>450M</td>
+<td>$1,350</td>
+<td>~$16.2K</td>
+<td>$0.09</td>
+</tr>
+<tr>
+<td>20 (agent)</td>
+<td>600M</td>
+<td>$1,800</td>
+<td>~$21.6K</td>
+<td>$0.12</td>
+</tr>
+</tbody>
+</table></div>
+<p>Nothing about the business changed.</p>
+<p>The bill went up 20×.</p>
+<p><strong>The other side</strong></p>
+<p>Efficiency gains are real and unfinished.</p>
+<p>Right-sizing, routing to small models, caching, speculative decoding and better batching all cut real cost.</p>
+<p>Open-weight models put a hard ceiling on what frontier providers can charge.</p>
+<p>Unit cost is falling fast.</p>
+<p>Total spend is rising faster.</p>
+<p>Which wins depends on whether your usage grows faster than roughly 10× a year.</p>
+<p>Doing chat? Probably not.</p>
+<p>Deploying agents? Almost certainly.</p>
+<p>The person selling this agrees.</p>
+<p>In June 2026, Sam Altman told CNBC that the ROI question was "the most fair criticism right now of AI." <span class="chip c-stated">Stated</span></p></div>
+</section>
+<section class="sect" id="s4">
+<div class="snum">04</div>
+<h2>What a token actually costs</h2>
+<div class="prose"><p>Underneath the price list is physics.</p>
+<p>Inference has two phases with opposite bottlenecks on the same silicon.</p>
+<p><strong>Prefill</strong> processes the whole prompt in one parallel pass.</p>
+<p>Big matrix multiplications.</p>
+<p>Compute-bound.</p>
+<p>Efficient.</p>
+<p><strong>Decode</strong> generates output one token at a time.</p>
+<p>Every step rereads the weights and the whole key-value cache from memory.</p>
+<p>Memory-bandwidth-bound.</p>
+<p>Published measurements show the GPU working near capacity in prefill and well below it in decode. <span class="chip c-reported">Reported</span></p>
+<p>Decode is where most of your money goes.</p>
+<p>Reasoning and agents make outputs longer.</p>
+<p>Longer outputs mean decode dominates.</p>
+<p>And decode attention grows with context length, because every step walks the full cache.</p>
+<p>Long context isn't a mild premium.</p>
+<p>It compounds.</p>
+<p>At batch size one, per-token decode has been measured at up to 200× the cost of prefill. <span class="chip c-reported">Reported — SARATHI</span></p>
+<p>That's why nobody serious runs single-user inference on expensive silicon.</p>
+<p><strong>Batching is the only real lever.</strong></p>
+<p>Serve many requests at once and the cost of reading the weights is shared across the batch.</p>
+<p>Continuous batching swaps requests in and out at every step instead of waiting for the slowest.</p>
+<p>Which leads to the line that matters most in this piece:</p>
+<p>Inference gets dramatically cheaper per token the busier the machine is.</p>
+<p>Utilisation is not an efficiency metric.</p>
+<p>It is the price.</p>
+<p>Hyperscalers aggregate thousands of customers.</p>
+<p>Their batches stay full.</p>
+<p>That's why "run it yourself and save" fails for spiky workloads.</p>
+<p>It's also why it can succeed for steady ones.</p>
+<p>A machine at 15% utilisation is a very expensive way to buy tokens.</p>
+<p>At 70% it isn't.</p>
+<p><strong>The bandwidth ladder</strong></p>
+<p>Decode is bandwidth-bound, so memory bandwidth, not headline FLOPs, predicts inference throughput.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Accelerator</th>
+<th>HBM bandwidth</th>
+<th>Practical consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H200</td>
+<td>4.8 TB/s</td>
+<td>Mixed prefill/decode batching stays efficient until decode dominates the batch</td>
+</tr>
+<tr>
+<td>H100 SXM</td>
+<td>~3.35 TB/s</td>
+<td>The reference point for most published inference economics</td>
+</tr>
+<tr>
+<td>RTX PRO 6000</td>
+<td>1.792 TB/s</td>
+<td>The same strategy degrades far earlier</td>
+</tr>
+</tbody>
+</table></div>
+<p><span class="chip c-reported">Reported — arXiv:2606.00516</span></p>
+<p>Performance doesn't scale linearly down the ladder.</p>
+<p>"We'll just run it on cheaper cards" is a claim to test, not assume.</p>
+<p><strong>The other side</strong></p>
+<p>Disaggregated serving puts prefill and decode on separate hardware.</p>
+<p>One well-known study (DistServe) reported 7.4× more requests or 12.6× tighter latency targets. <span class="chip c-reported">Reported</span></p>
+<p>It needs fast cache transfer and scale.</p>
+<p>An optimisation for operators at scale.</p>
+<p>Not an escape hatch for a small deployment.</p></div>
+</section>
+<section class="sect" id="s5">
+<div class="snum">05</div>
+<h2>Where it runs</h2>
+<div class="prose"><p>There's no general answer to cloud versus owned.</p>
+<p>There's a break-even.</p>
+<p>It moves on four variables you can measure.</p>
+<p>Most published comparisons come from someone with a commercial interest in the outcome.</p>
+<p>So here's the structure without the conclusion.</p>
+<p><strong>What cloud wins</strong></p>
+<ul>
+<li>Spiky or unknown demand. Can't forecast next month within 3×? Don't buy fixed capacity.</li>
+<li>Frontier capability on tap, and the freedom to switch next quarter.</li>
+<li>Utilisation you'd never reach alone.</li>
+<li>Zero operational burden.</li>
+<li>Experimentation. Finding out shouldn't be a capital decision.</li>
+</ul>
+<p><strong>Where metered pricing stops working</strong></p>
+<ul>
+<li>Steady, high-volume, predictable inference.</li>
+<li>Long context at scale.</li>
+<li>Data that can't move for regulatory, sovereignty or contractual reasons.</li>
+<li>Egress and retrieval gravity.</li>
+<li>Latency floors a network round trip can't meet.</li>
+</ul>
+<p><strong>Worked example: where the line sits</strong></p>
+<p>Owned capacity: $9,000 a month all-in (hardware, power, cooling, space and the engineer who keeps it alive). Ceiling: 3,000M tokens a month at 100% utilisation. Metered: $3.00 per million.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Monthly volume</th>
+<th>Metered cost</th>
+<th>Owned cost</th>
+<th>Owned $/M tokens at that volume</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200M</td>
+<td>$600</td>
+<td>$9,000</td>
+<td>$45.00</td>
+</tr>
+<tr>
+<td>1,050M (35% utilisation)</td>
+<td>$3,150</td>
+<td>$9,000</td>
+<td>$8.57</td>
+</tr>
+<tr>
+<td>3,000M (100% utilisation)</td>
+<td>$9,000</td>
+<td>$9,000</td>
+<td>$3.00</td>
+</tr>
+</tbody>
+</table></div>
+<p>Break-even in this example: 3,000M tokens a month.</p>
+<p>Full utilisation.</p>
+<p>Which almost nobody hits.</p>
+<p>The model is deliberately crude.</p>
+<p>Metered prices fall roughly an order of magnitude a year.</p>
+<p>Owned hardware depreciates against a moving frontier.</p>
+<p>Capacity varies hugely by model, quantisation and context.</p>
+<p>Use it to see the shape.</p>
+<p>Never to justify a purchase.</p>
+<p>The one thing it gets right: utilisation is the dominant term.</p>
+<p>And it's the term business cases most often overstate.</p>
+<p><strong>The hybrid answer isn't a cop-out</strong></p>
+<p>Route most tokens to a small, cheap, well-tuned model wherever it's cheapest.</p>
+<p>Escalate to a frontier model only when the task needs it.</p>
+<p>Gartner's own advice says the same: tier inference and gate frontier models. <span class="chip c-stated">Stated</span></p>
+<p>Routing also forces you to separate the harness from any one model family.</p>
+<p>That's the discipline that protects you commercially.</p></div>
+</section>
+<section class="sect" id="s6">
+<div class="snum">06</div>
+<h2>Everything above sits on a memory constraint</h2>
+<div class="prose"><p>The least discussed constraint of 2026.</p>
+<p>Not a cycle.</p>
+<p>A reallocation.</p>
+<p>The three companies that make the world's DRAM have shifted wafer capacity toward high-bandwidth memory for AI accelerators. <span class="chip c-reported">Reported</span></p>
+<p>Every wafer that goes to HBM is a wafer that doesn't go to conventional server memory.</p>
+<p>New fabs take years, not quarters.</p>
+<p>Industry reporting through late 2025 and 2026 describes longer lead times, shorter quote windows and rising server memory prices. <span class="chip c-reported">Reported</span></p>
+<p><strong>Why it changes behaviour, not just budgets</strong></p>
+<p>When lead time binds, availability outranks spec.</p>
+<p>Procurement stops being a quarterly event and becomes continuous.</p>
+<p>Architecture choices that avoid unusual memory configurations reduce schedule risk.</p>
+<p><strong>The other side</strong></p>
+<p>Shortage narratives overshoot.</p>
+<p>Panic ordering inflates the shortage and builds the glut that ends it.</p>
+<p>The counter is that this capacity wasn't lost.</p>
+<p>It was repurposed toward a higher-margin product with its own demand curve.</p>
+<p>How much is structural and how much is panic? Reasonable people disagree. <span class="chip c-disputed">Contested</span></p></div>
+</section>
+<section class="sect" id="s7">
+<div class="snum">07</div>
+<h2>Five people, one disagreement</h2>
+<div class="prose"><p>They aren't arguing about which model is best.</p>
+<p>They're arguing about who owns the loop once the model can act.</p>
+<p>Read these as five architectural bets.</p>
+<p>In each case, strategy and commercial interest point the same way.</p>
+<h3>Microsoft — the model is substitutable, the loop is not</h3>
+<p>On 14 June 2026 Satya Nadella published "A frontier without an ecosystem is not stable." <span class="chip c-stated">Stated</span></p>
+<p>Two kinds of capital.</p>
+<p>Human capital: the knowledge and judgment of your people.</p>
+<p>Token capital: the AI capability the firm builds and owns. Data, workflows, evaluations, tuned systems.</p>
+<p>His claim: human capital becomes more valuable as token capital grows. "Without human direction, you have compute running in circles."</p>
+<p>The warning underneath: frontier models can absorb an organisation's expertise and commoditise it.</p>
+<p>His test is the most useful line in this piece.</p>
+<p>Can you swap the underlying model without losing the expertise you encoded?</p>
+<p>He calls it "the key test of your control and sovereignty."</p>
+<p>If not, you don't own your AI.</p>
+<p>You're renting it.</p>
+<p><strong>The other side.</strong> It's also a platform pitch. "Token capital" isn't an auditable line item. And Microsoft guided to about $175B of reported capex for calendar 2026, down from $190B only because of a lease-accounting change, with plans unchanged. <span class="chip c-filed">Filed</span> That's not the behaviour of a company that thinks infrastructure is a commodity.</p>
+<h3>Alphabet / Google — integration is the moat</h3>
+<p>The opposite architecture.</p>
+<p>One model sharing context across search, productivity, the data warehouse and the cloud.</p>
+<p>The agent, the data and the workflow are never separate things.</p>
+<p>The maturity signal: the question has moved from "can we build an agent?" to "how do we govern a lot of them?"</p>
+<p>For an organisation already standardised on one stack, this is the path of least resistance.</p>
+<p><strong>The other side.</strong> It's exactly the architecture Nadella's swap test is built to fail. Convenience and captivity are the same mechanism, seen from opposite ends. (More on that in <em>The Silent Landlord</em>.)</p>
+<h3>Amazon / AWS — win the factory, not the model</h3>
+<p>No one model will rule.</p>
+<p>So be the place where inference and agents run, whoever's model wins.</p>
+<p>The sharpest observation in this camp: agent projects stall on stitching, not models.</p>
+<p>Identity. Policy. Permissions. Payments. Tool access. Retries.</p>
+<p>So productise the stitching.</p>
+<p>That's where projects die, so that's where switching costs live.</p>
+<p>Agents also do a lot of work that isn't GPU inference: orchestration, retrieval, evaluation.</p>
+<p><strong>The other side.</strong> "We don't need the best model" is a comfortable line for whoever's least likely to have it. A real capability jump is exactly the bet the neutral factory loses.</p>
+<h3>xAI — own everything down to the power</h3>
+<p>Model, agents, robots, chips and power under one roof.</p>
+<p>The argument: AI's binding constraints are physical. Land, electricity, cooling, silicon.</p>
+<p>There's a private-deployment path for organisations that won't send their corpus to an external API.</p>
+<p>That buyer category is real and growing.</p>
+<p>On 3 September 2026, ChatGPT/Codex, Claude and Grok had confirmed, overlapping interruptions in the same morning window. <span class="chip c-reported">Reported</span></p>
+<p>Gemini saw a spike in user reports. Google didn't confirm an outage. <span class="chip c-reported">Reported</span></p>
+<p>No shared cause has been established. OpenAI attributed its incident to an internal routing error. <span class="chip c-stated">Stated</span></p>
+<p>The lesson is narrow but real.</p>
+<p>Concentration risk stopped being hypothetical.</p>
+<p>Failover is harder than a second API key, because prompts and behaviour don't port cleanly between model families.</p>
+<p><strong>The other side.</strong> Full vertical integration is the most capital-heavy and least flexible strategy there is. It concentrates exactly the risk it claims to remove.</p>
+<h3>OpenAI — reasoning unlocked agents, agents unlocked work</h3>
+<p>The sequence: better reasoning made agents viable, and agents turn a text box into economic work.</p>
+<p>On 14 August 2026, CFO Sarah Friar told investors enterprise revenue had overtaken consumer for the first time. <span class="chip c-reported">Reported</span></p>
+<p>"We entered the year at 60-40."</p>
+<p>Run-rate revenue was around $40B. <span class="chip c-reported">Reported</span></p>
+<p>That's a behavioural signal, not a projection.</p>
+<p>The money moved to production.</p>
+<p><strong>The other side.</strong> Spending as if infrastructure is scarce is a bet, not a proof. If demand decelerates, a lot of capital is stranded in depreciating hardware.</p>
+<h3>What survives when you strip out the branding</h3>
+<ul>
+<li>Chat was the demo. Agents that reason and execute are the product.</li>
+<li>Token growth is overwhelmingly inference, not training.</li>
+<li>The scarce assets are power, usable data and governance. Not another software seat.</li>
+<li>Models rotate. Your data, workflows and evaluations don't.</li>
+<li>Human judgment becomes more valuable, because someone has to decide what the system is for.</li>
+</ul></div>
+</section>
+<section class="sect" id="s8">
+<div class="snum">08</div>
+<h2>The toll gate</h2>
+<div class="prose"><p>In 2025 the consensus was that agents would eat SaaS.</p>
+<p>In 2026 SaaS noticed agents reading its customers' data for free.</p>
+<p>And installed a meter.</p>
+<p>For roughly twenty-five years, enterprise APIs were effectively free once you'd bought the licence.</p>
+<p>That assumption is gone.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Vendor</th>
+<th>Mechanism</th>
+<th>Posture</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SAP</td>
+<td>API Policy enforced from 9 June 2026: third-party agents and bulk extraction go through SAP-endorsed pathways</td>
+<td>Gate <span class="chip c-filed">Filed</span></td>
+</tr>
+<tr>
+<td>ServiceNow</td>
+<td>Action Fabric: outside agents pass through a governed layer</td>
+<td>Gate <span class="chip c-stated">Stated</span></td>
+</tr>
+<tr>
+<td>Salesforce</td>
+<td>Flex Credits at roughly $0.10 per action</td>
+<td>Meter <span class="chip c-stated">Stated</span></td>
+</tr>
+<tr>
+<td>Intercom</td>
+<td>$0.99 per resolved ticket</td>
+<td>Outcome <span class="chip c-stated">Stated</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th></th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Path</td>
+<td>Your agent → system of record</td>
+<td>Your agent → gateway (meter, policy) → system of record</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Bundled with the licence</td>
+<td>Priced per action</td>
+</tr>
+<tr>
+<td>Access</td>
+<td>Equal</td>
+<td>The vendor's own agents may get richer context</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Why this is the proof</strong></p>
+<p>The agent was never creating value from nothing.</p>
+<p>It was reading data that lived inside someone else's system.</p>
+<p>Data the vendor spent twenty years structuring.</p>
+<p>The moment the owner metered access, the value moved back to the data.</p>
+<p>The model was never the moat.</p>
+<p>It was standing on someone else's data.</p>
+<p>And that someone noticed.</p>
+<p>Seat-based pricing fell from 21% to 15% of the SaaS market in a year. <span class="chip c-reported">Reported — Zylo</span></p>
+<p>78% of IT leaders reported unexpected consumption or AI charges. <span class="chip c-reported">Reported — Zylo</span></p>
+<p>The software bill now behaves like a cloud bill.</p>
+<p><strong>The question for any organisation</strong></p>
+<p>Where does the data your agents need actually live?</p>
+<p>Who controls the meter on it?</p>
+<p>If the answer is "three vendor platforms, and they set the price", that should be a decision.</p>
+<p>In most organisations it isn't.</p>
+<p><strong>The other side.</strong> Metering isn't a scandal. Agents do consume more, in bursty, retry-heavy patterns. Vendors are pricing a real cost. The legitimate objection is narrower: context-tiering, where the vendor's own agent sees more of your data than yours does. That's using custody to advantage a product. Negotiate there.</p></div>
+<figure>
+    <svg viewBox="0 0 700 230" role="img" aria-label="Before and after the agent toll gate">
+      <text x="10" y="18" class="sl">BEFORE — API ACCESS BUNDLED WITH THE LICENCE</text>
+      <line x1="10" y1="26" x2="690" y2="26" stroke="#26262f"/>
+      <rect x="14" y="42" width="120" height="40" rx="4" fill="#17171e" stroke="#26262f"/>
+      <text x="74" y="66" class="st" text-anchor="middle">Your agent</text>
+      <line x1="136" y1="62" x2="300" y2="62" stroke="#5fd08a" stroke-width="1.4" marker-end="url(#g1)"/>
+      <text x="218" y="54" class="sl" text-anchor="middle" fill="#5fd08a">free</text>
+      <rect x="304" y="42" width="150" height="40" rx="4" fill="#17171e" stroke="#26262f"/>
+      <text x="379" y="66" class="st" text-anchor="middle">System of record</text>
+      <text x="470" y="66" class="sl">your data, no marginal cost</text>
+
+      <text x="10" y="128" class="sl">AFTER — THE GATEWAY SITS IN THE PATH</text>
+      <line x1="10" y1="136" x2="690" y2="136" stroke="#26262f"/>
+      <rect x="14" y="152" width="120" height="40" rx="4" fill="#17171e" stroke="#26262f"/>
+      <text x="74" y="176" class="st" text-anchor="middle">Your agent</text>
+      <line x1="136" y1="172" x2="188" y2="172" stroke="#ffab27" stroke-width="1.4" marker-end="url(#g2)"/>
+      <rect x="192" y="146" width="112" height="52" rx="4" fill="#1a1508" stroke="#ffab27" stroke-width="1.5"/>
+      <text x="248" y="168" class="st" text-anchor="middle" fill="#ffab27">Gateway</text>
+      <text x="248" y="186" class="sl" text-anchor="middle">meter · policy</text>
+      <line x1="306" y1="172" x2="358" y2="172" stroke="#ffab27" stroke-width="1.4" marker-end="url(#g2)"/>
+      <rect x="362" y="152" width="150" height="40" rx="4" fill="#17171e" stroke="#26262f"/>
+      <text x="437" y="176" class="st" text-anchor="middle">System of record</text>
+      <text x="528" y="170" class="sl" fill="#ffab27">priced per action</text>
+      <text x="528" y="186" class="sl" fill="#ff5d5d">native agents favoured</text>
+      <defs>
+        <marker id="g1" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#5fd08a"/></marker>
+        <marker id="g2" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#ffab27"/></marker>
+      </defs>
+    </svg>
+    <figcaption><b>Fig. 3</b> — Three postures have emerged: block, meter, and context-tiering (where the vendor's own agents get richer access than yours). None is unreasonable. All of them mean an independent agent needs deliberate architecture to stay on equal footing.</figcaption>
+  </figure></section>
+<section class="sect" id="s9">
+<div class="snum">09</div>
+<h2>Capability went up. Auditability didn&#x27;t.</h2>
+<div class="prose"><p>Today's reasoning models think in natural language before they answer.</p>
+<p>That's a historical accident with large consequences.</p>
+<p>We can read the reasoning.</p>
+<p>Monitor it.</p>
+<p>Produce something like an explanation.</p>
+<p>Researchers across the major labs called chain-of-thought monitorability "a new and fragile opportunity." <span class="chip c-reported">Reported — arXiv:2507.11473</span></p>
+<p>Valuable because it might not last.</p>
+<p>Three forces erode it.</p>
+<p>None of them is malicious.</p>
+<ul>
+<li><strong>Outcome-based training.</strong> Reward only the final answer and nothing keeps the reasoning readable.</li>
+<li><strong>The process-supervision paradox.</strong> Train for better-looking reasoning and you may decouple the explanation from the cause.</li>
+<li><strong>Architectural drift.</strong> Reasoning that never surfaces as tokens is more efficient and entirely opaque.</li>
+</ul>
+<p><strong>Why a business should care</strong></p>
+<p>Procurement asks four questions of every system.</p>
+<p>Who approved this?</p>
+<p>What did it touch?</p>
+<p>If it fails at 2am, who's accountable?</p>
+<p>Where's the record?</p>
+<p>A benchmark answers none of them.</p>
+<p>A signed, timestamped, reviewable trail answers all four.</p>
+<p>Google DeepMind researchers propose measuring monitorability as two properties: legibility and coverage. <span class="chip c-reported">Reported — arXiv:2510.23966</span></p>
+<p>Those are auditable concepts.</p>
+<p>Expect them in procurement questionnaires before they turn up in law.</p>
+<p>The practical test: when an agent completes a task next quarter, can you produce the record of who authorised it and what it touched?</p>
+<p>On demand.</p>
+<p>This Friday.</p>
+<p>To someone who doesn't work for you.</p></div>
+</section>
+<section class="sect" id="s10">
+<div class="snum">10</div>
+<h2>Australia: the number is not one number</h2>
+<div class="prose"><p>Ask "what share of Australian businesses use AI?" and credible 2026 studies give you anything from 12% to around 70%.</p>
+<p>That's not a scandal.</p>
+<p>It's a lesson in reading statistics.</p>
+<p>The ABS figure is 12% of employing businesses in 2024–25, released 25 June 2026. <span class="chip c-filed">Filed</span></p>
+<p>Up from 1% in 2021–22. <span class="chip c-filed">Filed</span></p>
+<p>That trajectory is the interesting number.</p>
+<p>Online panel surveys of small-business owners, asking broader "have you used AI?" questions, report figures several times higher. <span class="chip c-reported">Reported</span></p>
+<p>Different populations.</p>
+<p>Different questions.</p>
+<p>None of them wrong.</p>
+<p>None of them comparable.</p>
+<p>"Using AI" hides four states in one phrase:</p>
+<ul>
+<li><strong>Awareness.</strong> Staff know the tools exist.</li>
+<li><strong>Experimentation.</strong> Somebody tried a chatbot.</li>
+<li><strong>Repeatable use.</strong> A tool supports a defined task with human review.</li>
+<li><strong>Production.</strong> Embedded in a core process, governed, and something breaks if it stops.</li>
+</ul>
+<p>Only the last shows up in a P&amp;L.</p>
+<p><strong>Read the vendor numbers carefully</strong></p>
+<p>MYOB says its AI-using small-business customers are growing 2.8× faster. <span class="chip c-reported">Reported</span></p>
+<p>It's the vendor's own customer base.</p>
+<p>The correlation is probably real.</p>
+<p>The causation isn't established.</p>
+<p>The $142B-a-year GDP projection by 2030 came from research funded by OpenAI. <span class="chip c-disputed">Contested</span></p>
+<p>The Productivity Commission's independent number: up to 4.3% labour productivity growth over a decade, around $116B. <span class="chip c-filed">Filed</span></p>
+<p>Use that one.</p></div>
+</section>
+<section class="sect" id="s11">
+<div class="snum">11</div>
+<h2>AI-ready is not agent-ready</h2>
+<div class="prose"><p>This is the whole argument.</p>
+<p>The constraint on agent value isn't the model, the GPU or the budget.</p>
+<p>It's whether your data is in a state something autonomous can safely act on.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~95% of enterprise GenAI pilots with no measurable P&amp;L impact</td>
+<td>MIT NANDA <span class="chip c-reported">Reported</span></td>
+</tr>
+<tr>
+<td>40%+ of agentic AI projects forecast to be cancelled by end of 2027</td>
+<td>Gartner <span class="chip c-estimate">Estimate</span></td>
+</tr>
+<tr>
+<td>~88% of agent pilots never reaching production</td>
+<td>Widely cited 2026 survey figure; original source hard to trace <span class="chip c-disputed">Contested</span></td>
+</tr>
+</tbody>
+</table></div>
+<p>Look at what isn't in that list.</p>
+<p>Model quality.</p>
+<p>Models improved year after year.</p>
+<p>The production-conversion rate didn't move.</p>
+<p>If the bottleneck were the model, better models would have moved it.</p>
+<p>They didn't.</p>
+<p>Deployment is racing ahead.</p>
+<p>Outcomes are flat.</p>
+<p>That's not a scaling problem.</p>
+<p>It's a design problem.</p>
+<p><strong>The ladder</strong></p>
+<p>Most "AI-ready data" programmes reach rung three and declare victory.</p>
+<p>Agents need rung six.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>State</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Exists (read)</td>
+<td>The data is somewhere. Worth almost nothing on its own.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Reachable (read)</td>
+<td>A system can get to it without a human exporting a spreadsheet.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Retrievable (read)</td>
+<td>Chunked, embedded, indexed. What "AI-ready" usually means.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Permissioned write</td>
+<td>The agent has its own identity and explicitly scoped rights.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Logged write</td>
+<td>Every read, tool call and write recorded, followable by an outsider.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Reversible write</td>
+<td>A defined path to find what it changed and put it back.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rungs one to three are data engineering.</p>
+<p>Vendors will happily sell you help.</p>
+<p>Rungs four to six are governance and accountability.</p>
+<p>They can't be bought as a product.</p>
+<p>They're where pilots stop.</p>
+<p><strong>Why rung six isn't optional</strong></p>
+<p>In a press release dated 12 February 2026, Gartner predicted that by 2028, misconfigured AI in cyber-physical systems will shut down national critical infrastructure in a G20 country. <span class="chip c-estimate">Estimate</span></p>
+<p>Not hackers.</p>
+<p>VP Analyst Wam Voster: "a well-intentioned engineer, a flawed update script, or a misplaced decimal." <span class="chip c-stated">Stated</span></p>
+<p>A configuration error that acts.</p>
+<p>Gartner's remediation list is the ladder in different words.</p>
+<p>A safe override reachable by authorised humans.</p>
+<p>A digital twin to test changes first.</p>
+<p>Real-time monitoring with rollback.</p>
+<p>In July 2026 Gartner added that by 2028, 40% of organisations running agentic I&amp;O at scale will suffer a business-critical disruption, up from under 1% in 2026. <span class="chip c-estimate">Estimate</span></p>
+<p>These are planning assumptions, not incident logs.</p>
+<p>Australia is a G20 member.</p>
+<p>That makes it a local planning question.</p>
+<p>The principle scales from national grids down to an accounts-payable ledger:</p>
+<p>If you can't undo what the model writes, don't give it the write.</p>
+<p><strong>The one diagnostic question</strong></p>
+<p>Which system of record could an agent safely update tomorrow, how would we know it had, and how would we undo it?</p>
+<p>A confident answer for one system is a production path.</p>
+<p>No answer for any system means no compute, no model and no pilot will change the outcome.</p>
+<p>The first move is almost never new hardware.</p>
+<p>It's one high-volume, well-bounded process.</p>
+<p>Know its data.</p>
+<p>Decide what an agent may do to it.</p>
+<p>Prove the loop end to end on what you already run.</p>
+<p>The compute question answers itself once you know the token shape.</p></div>
+</section>
+<section class="sect" id="s12">
+<div class="snum">12</div>
+<h2>Three audiences</h2>
+<div class="prose"><p>One shift.</p>
+<p>Three conversations.</p>
+<p>Use the wrong register and good ideas stall.</p>
+<p><strong>The chief executive</strong></p>
+<p>Don't open with technology.</p>
+<p>The risk class has changed.</p>
+<p>A wrong chatbot answer is a bad email.</p>
+<p>A wrong agent action is a process failure with a paper trail.</p>
+<p>Then the accounting shift: from "what does this cost?" to "how much work can it produce, at what unit cost, and who owns the learning?"</p>
+<p>Then one question.</p>
+<p>Which two processes, run reliably every night, would change next quarter?</p>
+<p><strong>The data or technology leader</strong></p>
+<p>The ladder, in order.</p>
+<p>Inventory. Classify. Retrieve. Permission. Log. Reverse.</p>
+<p>Four questions.</p>
+<p>What data already lives in a system we control?</p>
+<p>What can't leave the jurisdiction?</p>
+<p>Which system of record could an agent safely update?</p>
+<p>Who owns the evaluation?</p>
+<p>Retire "AI-ready."</p>
+<p>Use read-ready versus write-ready.</p>
+<p><strong>Engineer to engineer</strong></p>
+<p>A whiteboard and six things.</p>
+<ul>
+<li>The runtime you've already standardised on. Don't add a fourth.</li>
+<li>A model router, not a model marriage.</li>
+<li>An evaluation harness before production, not after.</li>
+<li>The agent's identity as a first-class principal.</li>
+<li>Observability: traces, tool calls, cost per task.</li>
+<li>The rollback path, designed on day one.</li>
+</ul>
+<p><strong>The through-line</strong></p>
+<p>When this system acts on our behalf, can we explain it, constrain it and undo it?</p>
+<p>The executive hears risk.</p>
+<p>The data leader hears architecture.</p>
+<p>The engineer hears tooling.</p>
+<p>One question.</p></div>
+</section>
+<section class="sect" id="end">
+<div class="snum">·</div>
+<h2>Where this leaves things</h2>
+<div class="prose"><p>The important questions have almost nothing to do with which model is best this quarter.</p>
+<p>What does a token cost you, and why?</p>
+<p>Where does your workload sit on the utilisation curve?</p>
+<p>Who controls the meter on your data?</p>
+<p>Can you swap the model without losing what you built on top?</p>
+<p>Can your data survive something that acts?</p>
+<p>None of those has a vendor-shaped answer.</p>
+<p>All of them can be answered without waiting for the next model.</p>
+<p>Models rotate.</p>
+<p>Vendors rotate.</p>
+<p>What you can explain, constrain and undo is the part that stays yours.</p></div>
+</section>
+<section class="sect" id="s13">
+<div class="snum">·</div>
+<h2>Sources</h2>
+<div class="prose"><p><strong>Method.</strong> Primary documents are cited directly. Figures that reach me through secondary reporting are tagged Reported. Section 07's Google, Amazon and xAI positions are my characterisation of public strategy, not quotes. Re-check anything time-sensitive before reusing it.</p>
+<p><strong>Token and cost economics</strong>
+- Gartner, 25 Mar 2026: agentic models need 5–30× the tokens per task of a chatbot. <a href="https://gartner.com/en/newsroom/press-releases/2026-03-25" rel="noopener">gartner.com/en/newsroom/press-releases/2026-03-25</a>
+- Gartner "Inference Paradox": 8–10× cost per token for planning-and-learning models; $0.01 → $1.50 scenario; up to 150×. Computer Weekly; CIO.
+- Gartner, 17 Aug 2026: inference cost per agentic workflow up more than fivefold through 2028. <a href="https://gartner.com/en/newsroom/press-releases/2026-08-17" rel="noopener">gartner.com/en/newsroom/press-releases/2026-08-17</a>
+- OpenRouter Series B release, 26 May 2026: 25T tokens/week. <a href="https://businesswire.com/news/home/20260526953416/en/" rel="noopener">businesswire.com/news/home/20260526953416/en/</a>
+- Agentic/human crossover ~1 Feb 2026: SaaStr with OpenRouter's COO; arXiv:2607.07207.
+- Anthropic engineering blog (Jun 2025): multi-agent systems ~15× chat tokens.
+- Stanford HAI AI Index: ~280× cheaper GPT-3.5-level inference; a16z ~10×/yr.
+- Sam Altman, CNBC, 1 Jun 2026. <a href="https://businessinsider.com/sam-altman-addresses-ai-spending-concerns-capex-2026-6" rel="noopener">businessinsider.com/sam-altman-addresses-ai-spending-concerns-capex-2026-6</a></p>
+<p><strong>Inference mechanics</strong>
+- SARATHI, arXiv:2308.16369 · Threshold-Based Exclusive Batching, arXiv:2606.00516 · arXiv:2512.01644 · DistServe.</p>
+<p><strong>The five positions</strong>
+- Satya Nadella, "A frontier without an ecosystem is not stable", 14 Jun 2026.
+- Microsoft FY26 Q4 results, 29 Jul 2026: CY2026 reported capex ~$175B, revised from $190B for lease accounting. Reuters.
+- Sarah Friar, 14 Aug 2026. <a href="https://cnbc.com/2026/08/14/openai-cfo-friar-tells-investors-that-enterprise-bigger-than-consumer.html" rel="noopener">cnbc.com/2026/08/14/openai-cfo-friar-tells-investors-that-enterprise-bigger-than-consumer.html</a>
+- 3 Sep 2026 outages. <a href="https://arstechnica.com/ai/2026/09/four-major-ai-models-suffer-rare-overlapping-downtime/" rel="noopener">arstechnica.com/ai/2026/09/four-major-ai-models-suffer-rare-overlapping-downtime/</a></p>
+<p><strong>The toll gate</strong>
+- SAP API Policy, enforcement 9 Jun 2026. ASUG.
+- ServiceNow Action Fabric, Knowledge 2026.
+- Salesforce Flex Credits; Intercom Fin $0.99/resolution.
+- Zylo 2026 SaaS Management Index: 21% → 15%; 78%. <a href="https://zylo.com/news/2026-saas-management-index" rel="noopener">zylo.com/news/2026-saas-management-index</a></p>
+<p><strong>Legibility</strong>
+- Korbak et al., arXiv:2507.11473 · Emmons et al. (Google DeepMind), arXiv:2510.23966.</p>
+<p><strong>Australia</strong>
+- ABS, Characteristics of Australian Business 2024–25, 25 Jun 2026; media release on adoption since 2021–22.
+- MYOB press release: 2.8×.
+- InnovationAus: OpenAI-funded $142B report.
+- Productivity Commission interim report: 4.3%, ~$116B.</p>
+<p><strong>Production failure</strong>
+- MIT NANDA: ~95%.
+- Gartner, Jun 2025: 40%+ of agentic AI projects cancelled by end of 2027.
+- Gartner press release, 12 Feb 2026 (Wam Voster). Gartner Hype Cycle, Jul 2026: 40% of agentic I&amp;O.</p>
+<p><em>The Autonomy Loop · Personal capacity. No employer, vendor or commercial relationship informed this analysis. No non-public information used. Corrections welcome and will be published.</em></p></div>
+</section>
+
+<footer style="padding:40px 0 60px;color:var(--paper-faint);font-family:var(--mono);font-size:12px">Gaurav Channagiri · The Autonomy Loop No. 05 · October 2026<br>Personal analysis. Public sources only. Not the view of any employer.</footer>
+</div></body></html>

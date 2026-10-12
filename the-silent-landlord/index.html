@@ -1,0 +1,717 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Silent Landlord · Google&#x27;s Ecosystem and Capital Moat</title>
+<meta name="description" content="Google doesn&#x27;t just rent you the house. It owns the land, the power and a stake in the neighbours. Every layer of the stack, and the balance sheet that funds it.">
+<meta name="author" content="Gaurav Channagiri">
+<link rel="canonical" href="https://gauravchannagiri.github.io/articles/the-silent-landlord/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://gauravchannagiri.github.io/articles/the-silent-landlord/">
+<meta property="og:title" content="The Silent Landlord · Google&#x27;s Ecosystem and Capital Moat">
+<meta property="og:description" content="Google doesn&#x27;t just rent you the house. It owns the land, the power and a stake in the neighbours. Every layer of the stack, and the balance sheet that funds it.">
+<meta property="og:image" content="https://gauravchannagiri.github.io/articles/the-silent-landlord/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Silent Landlord · Google&#x27;s Ecosystem and Capital Moat">
+<meta name="twitter:description" content="Google doesn&#x27;t just rent you the house. It owns the land, the power and a stake in the neighbours. Every layer of the stack, and the balance sheet that funds it.">
+<meta name="twitter:image" content="https://gauravchannagiri.github.io/articles/the-silent-landlord/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><meta name="theme-color" content="#07070b"><style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --g-blue: #4285F4;
+    --g-red: #EA4335;
+    --g-yellow: #FBBC05;
+    --g-green: #34A853;
+    --g-purple: #a855f7;
+    --g-cyan: #06b6d4;
+    --g-orange: #f97316;
+    --bg: #07070b;
+    --surface: #0e0e16;
+    --surface-elevated: #161622;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.2);
+    --text: #f1f1f6;
+    --muted: #828299;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 60px 24px 40px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(circle at 50% 0%, rgba(66,133,244,0.08), transparent 70%);
+  }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--g-blue);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 108px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff 0%, #b8b8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* MAIN WRAPPER */
+  .canvas {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+    position: relative;
+  }
+
+  /* STAT BAR */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    border: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--surface);
+    padding: 22px 18px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .stat:hover { background: var(--surface-elevated); }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(30px, 3.2vw, 44px);
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* CENTER GEMINI CORE */
+  .center-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 50px;
+    position: relative;
+    z-index: 10;
+  }
+  .gemini-node {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #4285F4, #0b1c48);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    box-shadow: 0 0 60px rgba(66,133,244,0.35), 0 0 120px rgba(66,133,244,0.15);
+  }
+  .gemini-node:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 80px rgba(66,133,244,0.55), 0 0 160px rgba(66,133,244,0.3);
+  }
+  .gemini-node::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--g-blue), var(--g-red), var(--g-yellow), var(--g-green), var(--g-purple), var(--g-blue));
+    z-index: -1;
+    animation: spin 9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .gemini-icon { font-size: 40px; line-height: 1; margin-bottom: 4px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
+  .gemini-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .gemini-sub {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .pulse {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--g-blue);
+    animation: pulse-ring 3s ease-out infinite;
+    pointer-events: none;
+  }
+  .pulse:nth-child(2) { animation-delay: 1s; }
+  .pulse:nth-child(3) { animation-delay: 2s; }
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* SECTION LABELS */
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* LAYER GRID */
+  .grid {
+    display: grid;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+  /* CARDS */
+  .layer-card {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 22px 20px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-color, var(--g-blue));
+    opacity: 0.6;
+    transition: opacity 0.25s;
+  }
+  .layer-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    background: var(--surface-elevated);
+  }
+  .layer-card:hover::before { opacity: 1; }
+  .layer-card.active {
+    border-color: var(--card-color, var(--g-blue));
+    background: var(--surface-elevated);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .card-emoji { font-size: 26px; line-height: 1; }
+  .card-title-block { flex: 1; min-width: 0; }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #fff;
+  }
+  .card-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 4px;
+    background: var(--card-color, var(--g-blue));
+    color: #fff;
+    opacity: 0.9;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* PRODUCTS PILLS */
+  .products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .layer-card.active .products {
+    max-height: 260px;
+    opacity: 1;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.02);
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .pill:hover {
+    border-color: var(--card-color);
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* STRATEGIC CAPITAL CALLOUT (LAYER 10) */
+  .capital-card {
+    background: linear-gradient(135deg, rgba(26,17,40,0.6) 0%, rgba(14,20,38,0.7) 100%);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 14px;
+    padding: 26px 24px;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .capital-card::after {
+    content: 'STRATEGIC CAPITAL & POWER';
+    position: absolute;
+    top: 14px; right: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--g-purple);
+  }
+
+  /* CREATIVE STACK SPOTLIGHT */
+  .spotlight {
+    background: linear-gradient(135deg, #091224 0%, #061811 50%, #160a22 100%);
+    border-radius: 14px;
+    border: 1px solid var(--border-hover);
+    padding: 32px 28px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--g-green);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .spotlight-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pipe-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: all 0.2s;
+  }
+  .pipe-item:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .pipe-icon { font-size: 20px; }
+  .pipe-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .pipe-role {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 2px;
+  }
+  .pipe-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* FLYWHEEL LOOP */
+  .flywheel-wrap {
+    margin: 40px 0;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .flywheel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .flywheel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fw-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+  .fw-bubble {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    transition: transform 0.25s, border-color 0.25s;
+  }
+  .fw-step:hover .fw-bubble {
+    transform: scale(1.12);
+    border-color: var(--g-blue);
+  }
+  .fw-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .fw-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* ANTITRUST WARNING */
+  .alert-box {
+    border-radius: 12px;
+    border: 1px solid rgba(234,67,53,0.3);
+    background: rgba(234,67,53,0.05);
+    padding: 22px 24px;
+    margin: 20px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .alert-box .icon { font-size: 22px; flex-shrink: 0; }
+  .alert-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--g-red);
+    margin-bottom: 6px;
+  }
+  .alert-text {
+    font-size: 13px;
+    color: #a8a8b8;
+    line-height: 1.6;
+  }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    text-align: center;
+    padding: 50px 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-note p {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .footer-note .author {
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* FLOATING TOOLTIP */
+  .tip {
+    position: fixed;
+    background: #181824;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #e2e2ee;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    max-width: 250px;
+    line-height: 1.45;
+    z-index: 99999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  }
+  .tip.visible { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { flex-direction: column; align-items: stretch; }
+    .pipe-arrow { text-align: center; transform: rotate(90deg); }
+    .flywheel { flex-direction: column; gap: 14px; }
+    .fw-arrow { transform: rotate(90deg); }
+  }
+
+.prose p{margin:0 0 14px} .prose h3{margin:28px 0 10px;font-size:20px;font-weight:600;color:var(--text)}
+.prose ul,.prose ol{margin:0 0 16px 22px} .prose li{margin:0 0 8px}
+.prose a{color:var(--g-blue);text-underline-offset:3px;word-break:break-word}
+.prose blockquote{border-left:3px solid var(--g-blue);padding:6px 0 6px 18px;margin:18px 0;color:var(--muted)}
+.tblw{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--border);border-radius:12px}
+.tblw table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tblw th{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tblw td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.tblw tr:last-child td{border-bottom:0}
+.tblw thead:empty,.tblw thead tr:only-child th:empty{display:none}
+figure.xf{margin:28px auto} figure.xf svg{display:block;width:100%;height:auto}
+figure.xf figcaption{font-size:14px;color:var(--muted);margin-top:12px;line-height:1.55}
+@media(max-width:600px){.tblw table{font-size:14px} .tblw th,.tblw td{padding:9px 10px}}
+
+.prose{font-size:16px;line-height:1.75;max-width:780px;margin:0 auto}
+.slsec{margin:56px 0}
+.slsec h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,48px);letter-spacing:1px;text-align:center;margin:-8px 0 22px;font-weight:400}
+.layer-card .card-desc p{margin:0 0 8px}
+.layer-card{opacity:1!important;transform:none!important}
+.pulse{animation:none!important;display:none}
+.t{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.flywheel{flex-wrap:wrap}
+</style></head><body>
+<div class="header"><div class="eyebrow">Gaurav Channagiri · The Autonomy Loop 03 · October 2026</div>
+<h1>The Silent Landlord</h1><p class="subtitle">Google doesn&#x27;t just rent you the house. It owns the land, the power and a stake in the neighbours.</p></div>
+<div class="canvas">
+<div class="stat-bar">
+<div class="stat"><div class="stat-num" style="color:var(--g-blue)">5T+</div><div class="stat-label">Searches per year</div></div>
+<div class="stat"><div class="stat-num" style="color:var(--g-green)">$195–205B</div><div class="stat-label">2026 capex guidance</div></div>
+<div class="stat"><div class="stat-num" style="color:var(--g-purple)">$514B</div><div class="stat-label">Cloud backlog, Q2 2026</div></div>
+<div class="stat"><div class="stat-num" style="color:var(--g-yellow)">$94.1B</div><div class="stat-label">SpaceX stake (10-Q)</div></div>
+</div>
+<div class="center-wrap"><div class="gemini-node"><div class="gemini-icon" aria-hidden="true">✦</div><div class="gemini-label">GEMINI</div><div class="gemini-sub">950M monthly app users</div></div></div>
+<div class="prose"><p>You don't use Google.</p>
+<p>You live in it.</p>
+<p>Search. Phone. Home. Car. Work. Your kid's classroom.</p>
+<p>And underneath, a $195–205B capex programme and equity stakes in the companies that rent from it.</p></div><section class="slsec" id="the-numbers-on-one-page"><div class="section-tag">The numbers on one page</div><div class="prose"><div class="tblw"><table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Value</th>
+<th>Provenance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Searches per year</td>
+<td>5 trillion+ (~14B a day)</td>
+<td>Stated</td>
+</tr>
+<tr>
+<td>Active Android devices</td>
+<td>3B+</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>Gemini app monthly users</td>
+<td>950M (Q2 2026)</td>
+<td>Stated</td>
+</tr>
+<tr>
+<td>2026 capex guidance</td>
+<td>$195–205B</td>
+<td>Stated</td>
+</tr>
+<tr>
+<td>Google Cloud backlog, Q2 2026</td>
+<td>$514B</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>Alphabet's SpaceX stake</td>
+<td>$94.1B (Q2 10-Q)</td>
+<td>Filed</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are the same figures used in <em><a href="https://gauravchannagiri.github.io/articles/the-two-name-problem/">The Two-Name Problem</a></em>.</p>
+<p>One set of numbers.</p>
+<p>Two readings.</p></div></section>
+<section class="slsec" id="the-consumer-edge"><div class="section-tag">The consumer edge</div><div class="grid grid-3"><div class="layer-card" style="--card-color:var(--g-red)"><div class="card-top"><div class="card-emoji" aria-hidden="true">1</div><div class="card-title-block"><div class="card-title">Ambient attention</div></div></div><div class="card-desc"><p>Search stopped being a box.</p>
+<p>AI Overviews, AI Mode, Circle to Search and Google Lens catch intent before you type a URL.</p>
+<p>YouTube Shorts and Discover fill the gaps in between.</p></div></div><div class="layer-card" style="--card-color:var(--g-blue)"><div class="card-top"><div class="card-emoji" aria-hidden="true">2</div><div class="card-title-block"><div class="card-title">Silicon and device</div></div></div><div class="card-desc"><p>Android runs on 3B+ active devices. <span class="t">Filed</span></p>
+<p>Pixel phones run Google's own Tensor chips.</p>
+<p>Android XR extends the same stack onto your face.</p></div></div><div class="layer-card" style="--card-color:var(--g-yellow)"><div class="card-top"><div class="card-emoji" aria-hidden="true">3</div><div class="card-title-block"><div class="card-title">Living room and home</div></div></div><div class="card-desc"><p>The Google Home ecosystem connects 800M+ devices. <span class="t">Stated</span></p>
+<p>Gemini for Home is replacing Assistant on compatible speakers and displays, a rollout that began in October 2025. <span class="t">Stated</span></p>
+<p>The agent moved into the living room.</p>
+<p>Room by room.</p></div></div><div class="layer-card" style="--card-color:var(--g-green)"><div class="card-top"><div class="card-emoji" aria-hidden="true">4</div><div class="card-title-block"><div class="card-title">Physical movement</div></div></div><div class="card-desc"><p>Maps knows where you're going.</p>
+<p>Waze knows how traffic flows.</p>
+<p>Waymo drives you there: 14M+ paid trips in 2025. <span class="t">Stated</span></p>
+<p>Wing delivers the parcel.</p></div></div><div class="layer-card" style="--card-color:var(--g-purple)"><div class="card-top"><div class="card-emoji" aria-hidden="true">5</div><div class="card-title-block"><div class="card-title">Work</div></div></div><div class="card-desc"><p>Gemini is embedded across Gmail, Docs, Sheets, Meet and Drive.</p>
+<p>Google Vids turns documents into video.</p>
+<p>Your work flows through the same brain as your search history.</p></div></div><div class="layer-card" style="--card-color:var(--g-cyan)"><div class="card-top"><div class="card-emoji" aria-hidden="true">6</div><div class="card-title-block"><div class="card-title">Education</div></div></div><div class="card-desc"><p>Google Classroom and Chromebooks are standard kit in a large share of classrooms.</p>
+<p>The next generation learns to think on Google's surface.</p>
+<p>Mindshare is the longest moat there is.</p></div></div></div></section>
+<section class="slsec" id="the-deep-stack"><div class="section-tag">The deep stack</div><div class="grid grid-3"><div class="layer-card" style="--card-color:var(--g-orange)"><div class="card-top"><div class="card-emoji" aria-hidden="true">7</div><div class="card-title-block"><div class="card-title">Science and health</div></div></div><div class="card-desc"><p>AlphaFold 3. Isomorphic Labs. Verily. Calico. Fitbit.</p>
+<p>AlphaFold won a share of the 2024 Nobel Prize in Chemistry.</p></div></div><div class="layer-card" style="--card-color:var(--g-blue)"><div class="card-top"><div class="card-emoji" aria-hidden="true">8</div><div class="card-title-block"><div class="card-title">Cloud silicon and security</div></div></div><div class="card-desc"><p>Ironwood is the seventh-generation TPU.</p>
+<p>The eighth splits in two: TPU 8t for training, TPU 8i for inference. <span class="t">Stated</span></p>
+<p>Axion Arm CPUs. Vertex AI. BigQuery. Mandiant.</p>
+<p>Custom silicon is how Google drives down its own cost of serving AI.</p></div></div><div class="layer-card" style="--card-color:var(--g-green)"><div class="card-top"><div class="card-emoji" aria-hidden="true">9</div><div class="card-title-block"><div class="card-title">Frontier runtimes</div></div></div><div class="card-desc"><p>Gemini 3.8 Flash and 3.8 Flash Cyber shipped 2 Sep 2026. <span class="t">Stated</span></p>
+<p>Gemini Live. Gemma open models. Jules. Antigravity. Genie 3.</p>
+<p>Reasoning, made cheap enough to leave running.</p></div></div><div class="layer-card" style="grid-column:1/-1;--card-color:var(--g-purple)"><div class="card-top"><div class="card-emoji" aria-hidden="true">10</div><div class="card-title-block"><div class="card-title">The capital and energy moat</div></div></div><div class="card-desc"><p>This is where the landlord owns the street.</p>
+<div class="tblw"><table>
+<thead>
+<tr>
+<th>Position</th>
+<th>What Google holds</th>
+<th>Provenance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anthropic</td>
+<td>Up to $40B committed (Apr 2026); up to 1M TPUs and 5GW of capacity over five years</td>
+<td>Stated</td>
+</tr>
+<tr>
+<td>Anthropic stake</td>
+<td>~14%, capped at 15%, as of 2025 court filings</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>SpaceX</td>
+<td>Stake valued at $94.1B; Google <em>pays</em> SpaceX $920M a month for compute, Oct 2026 – Jun 2029</td>
+<td>Filed</td>
+</tr>
+<tr>
+<td>Kairos Power</td>
+<td>Up to 500MW of small modular nuclear capacity by 2035</td>
+<td>Stated</td>
+</tr>
+<tr>
+<td>Blackstone</td>
+<td>US TPU cloud joint venture, 500MW targeted for 2027</td>
+<td>Stated</td>
+</tr>
+<tr>
+<td>Subsea fibre</td>
+<td>Owned cable routes between continents</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>Tenant, lender and shareholder.</p>
+<p>All at once.</p></div></div></div></section>
+<section class="slsec" id="the-production-pipeline"><div class="section-tag">The production pipeline</div><figure class="xf" data-fig="fig2-pipeline" role="img" aria-label="Pipeline: Gemini directs and structures, NotebookLM grounds it in your documents, Nano Banana makes the images, Veo makes the video, Lyria scores the audio, Flow edits it together, SynthID watermarks it at generation, AI Studio / Vertex AI ships it"><div class="spotlight" aria-hidden="true"><div class="spotlight-label">★ The production pipeline</div><div class="spotlight-title">Prompt to finished media</div><div class="pipeline"><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">1</div><div><div class="pipe-name">GEMINI</div><div class="pipe-role">Directs and structures</div></div></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">2</div><div><div class="pipe-name">NOTEBOOKLM</div><div class="pipe-role">Grounds it in your documents</div></div></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">3</div><div><div class="pipe-name">NANO BANANA</div><div class="pipe-role">Makes the images</div></div></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">4</div><div><div class="pipe-name">VEO</div><div class="pipe-role">Makes the video</div></div></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">5</div><div><div class="pipe-name">LYRIA</div><div class="pipe-role">Scores the audio</div></div></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">6</div><div><div class="pipe-name">FLOW</div><div class="pipe-role">Edits it together</div></div></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">7</div><div><div class="pipe-name">SYNTHID</div><div class="pipe-role">Watermarks it at generation</div></div></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-item"><div class="pipe-icon" aria-hidden="true">8</div><div><div class="pipe-name">AI STUDIO / VERTEX AI</div><div class="pipe-role">Ships it</div></div></div></div></div><figcaption>Fig. 2. Prompt to finished media without leaving the building: eight Google tools, each step owned.</figcaption></figure><div class="prose"><p>Prompt to finished media, without leaving the building.</p>
+<p>Paste in a research report.</p>
+<p>Get back a watchable documentary.</p>
+<p>No edit timeline.</p>
+<p>No production team.</p>
+<p>Every step owned.</p></div></section>
+<section class="slsec" id="the-flywheel"><div class="section-tag">The flywheel</div><figure class="xf" data-fig="fig1-flywheel" role="img" aria-label="Flywheel: 3B+ devices and trillions of searches generate signal; Signal sharpens ads and models; Ad revenue funds $195–205B of capex; Capex buys custom silicon: Ironwood, TPU 8, Axion; Silicon and capacity are rented to the labs, which Google also owns stakes in; Platform gravity. Back to step 1."><div class="flywheel-wrap" aria-hidden="true"><div class="flywheel-title">The closed-loop cash and compute flywheel</div><div class="flywheel"><div class="fw-step"><div class="fw-bubble">👥</div><div class="fw-label">3B+ devices and trillions of searches generate signal</div></div><div class="fw-arrow" aria-hidden="true">→</div><div class="fw-step"><div class="fw-bubble">📊</div><div class="fw-label">Signal sharpens ads and models</div></div><div class="fw-arrow" aria-hidden="true">→</div><div class="fw-step"><div class="fw-bubble">💰</div><div class="fw-label">Ad revenue funds $195–205B of capex</div></div><div class="fw-arrow" aria-hidden="true">→</div><div class="fw-step"><div class="fw-bubble">⚡</div><div class="fw-label">Capex buys custom silicon: Ironwood, TPU 8, Axion</div></div><div class="fw-arrow" aria-hidden="true">→</div><div class="fw-step"><div class="fw-bubble">🤝</div><div class="fw-label">Silicon and capacity are rented to the labs, which Google also owns stakes in</div></div><div class="fw-arrow" aria-hidden="true">→</div><div class="fw-step"><div class="fw-bubble" style="border-color:var(--g-green);color:var(--g-green)">🔄</div><div class="fw-label">Platform gravity. Back to step 1.</div></div></div></div><figcaption>Fig. 1. Signal funds capex, capex buys silicon, silicon is rented to labs Google also holds stakes in, and platform gravity brings it back to step 1.</figcaption></figure><div class="prose"><p>This loop has run for twenty years.</p>
+<p>Gemini just plugged into it.</p></div></section>
+<section class="slsec" id="the-courtroom-and-the-concrete"><div class="section-tag">The courtroom and the concrete</div><div class="prose"><p>The DOJ won its search case.</p>
+<p>Remedies took effect on 3 February 2026. <span class="t">Filed</span></p>
+<p>The court refused to order a Chrome divestiture.</p>
+<p>The fight now sits at the DC Circuit, over the payment ban and Google's own appeal. <span class="t">Filed</span></p>
+<p>Regulators can reach the software distribution.</p>
+<p>They have a much harder time reaching the subsea cables, the TPU fleet, the nuclear contracts and the equity web.</p>
+<p>That is my reading, not a ruling.</p>
+<p>But it's the reading the balance sheet supports.</p>
+<p><strong>Companion piece:</strong> <em><a href="https://gauravchannagiri.github.io/articles/the-two-name-problem/">The Two-Name Problem</a></em> reads the same balance sheet from the other side: who Google Cloud depends on, and what that means for anyone depending on Google Cloud.</p></div></section>
+<section class="slsec" id="sources"><div class="section-tag">Sources</div><div class="prose"><ul>
+<li>Google: 5 trillion+ searches per year. <span class="t">Stated</span> <a href="https://searchengineland.com/google-5-trillion-searches-per-year-452928" rel="noopener">searchengineland.com/google-5-trillion-searches-per-year-452928</a></li>
+<li>Alphabet annual report: 3B+ active Android devices. <span class="t">Filed</span></li>
+<li>Alphabet Q2 2026 results: Gemini app 950M monthly users; capex guidance $195–205B; backlog $514B; SpaceX holding $94.1B. <span class="t">Filed / Stated</span> <a href="https://sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm" rel="noopener">sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm</a></li>
+<li>Google, Gemini for Home launch: 800M+ devices in the Google Home ecosystem; rollout to compatible devices from Oct 2025. <span class="t">Stated</span> <a href="https://blog.google/products-and-platforms/devices/google-nest/gemini-for-home-launch/" rel="noopener">blog.google/products-and-platforms/devices/google-nest/gemini-for-home-launch/</a></li>
+<li>Waymo 2025 year in review: 14M+ trips. <span class="t">Stated</span> <a href="https://waymo.com/blog/2025/12/2025-year-in-review" rel="noopener">waymo.com/blog/2025/12/2025-year-in-review</a></li>
+<li>Google Cloud Next, 22 Apr 2026: TPU 8t / 8i; Ironwood. <span class="t">Stated</span></li>
+<li>Gemini 3.8 Flash and 3.8 Flash Cyber, 2 Sep 2026. <span class="t">Stated</span></li>
+<li>Alphabet–Anthropic: up to $40B (Apr 2026), up to 1M TPUs, 5GW. <span class="t">Stated</span> United States v. Google filings (2025): ~14% stake, 15% cap. <span class="t">Filed</span></li>
+<li>Google–SpaceX compute deal, $920M/month. <span class="t">Filed</span> SpaceX FWP / S-1 disclosure, 5 Jun 2026: <a href="https://sec.gov/Archives/edgar/data/1181412/000162828026041150/spacexagreementfwp.htm" rel="noopener">sec.gov/Archives/edgar/data/1181412/000162828026041150/spacexagreementfwp.htm</a> · CNBC: <a href="https://cnbc.com/2026/06/05/google-to-pay-spacex-920-million-a-month-for-xai-compute-capacity.html" rel="noopener">cnbc.com/2026/06/05/google-to-pay-spacex-920-million-a-month-for-xai-compute-capacity.html</a></li>
+<li>Kairos Power: up to 500MW by 2035. <span class="t">Stated</span> <a href="https://kairospower.com" rel="noopener">kairospower.com</a></li>
+<li>Blackstone–Google TPU cloud JV, 18 May 2026. <span class="t">Stated</span></li>
+<li>United States v. Google remedies and DC Circuit appeal. <span class="t">Filed</span> <a href="https://courtlistener.com" rel="noopener">courtlistener.com</a> (gov.uscourts.cadc.42811)</li>
+</ul>
+<p>When one company answers your questions, drives your car, runs your home, teaches your kids and funds its own competitors' compute, the question of who holds the keys isn't open.</p>
+<p>It's been answered.</p>
+<p><em>Personal analysis. Public sources only. Not the view of any employer.</em></p></div></section>
+
+<p style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:30px 0 60px">Gaurav Channagiri · The Autonomy Loop 03 · October 2026<br>Personal analysis. Public sources only. Not the view of any employer.</p>
+</div></body></html>

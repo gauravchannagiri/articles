@@ -162,7 +162,7 @@
   .split-tag { font-family:'DM Mono',monospace; font-size:9.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
   .split-col ul { list-style:none; display:grid; gap:10px; }
   .split-col li { font-size:13px; color:var(--muted); line-height:1.6; padding-left:16px; position:relative; }
-  .split-col li::before { content:'—'; position:absolute; left:0; color:var(--faint); }
+  .split-col li::before { content:', '; position:absolute; left:0; color:var(--faint); }
 
   /* COUNTER */
   .counter { border-top-color:var(--yellow); }
@@ -208,7 +208,18 @@ figure.xf figcaption{font-size:14px;color:var(--muted);margin-top:12px;line-heig
 .prose{font-size:16.5px;line-height:1.75;color:var(--text);max-width:760px}
 .prose strong{font-weight:600}
 section .prose{margin-top:6px}
-</style></head><body>
+
+.al-bar{display:flex;align-items:center;gap:12px;max-width:1060px;margin:0 auto;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,0.08);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.al-bar img{width:36px;height:36px;border-radius:50%}
+.al-bar a{color:#e8e8f0;text-decoration:none}.al-bar .al-name{font-weight:500}
+.al-bar .al-series{margin-left:auto;color:#8e8ea6}
+#al-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:9;background:linear-gradient(90deg,#34A853,#00BCD4,#9c27b0,#EA4335)}
+.al-toc{margin:28px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px}
+.al-toc summary{cursor:pointer;color:#8e8ea6;text-transform:uppercase;letter-spacing:2px}
+.al-toc ol{display:inline-block;text-align:left;margin:12px auto 0;padding-left:22px;line-height:2;max-width:640px}.al-toc a{color:#c9c9d6;text-decoration:none}.al-toc a:hover{color:#fff}
+.al-fig{margin:24px 0}.al-fig img{max-width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.08)}
+.al-fig figcaption{font-family:'DM Mono',monospace;font-size:11px;color:#8e8ea6;margin-top:8px}
+</style></head><body><div id="al-prog"></div><div class="al-bar"><a href="../"><img src="../img/abundance-loop-logo-96.png" alt="Abundance Loop logo"></a><a class="al-name" href="../">Abundance Loop</a><span class="al-series">The Autonomy Loop · No. 04</span></div>
 <div class="wrap"><div class="hero">
 <div class="eyebrow">Gaurav Channagiri · The Autonomy Loop 04 · October 2026</div>
 <h1>The Two-Name Problem</h1>
@@ -271,10 +282,10 @@ Every figure carries its provenance. The concentration numbers are estimates, no
 </tr>
 </tbody>
 </table></div>
-<p><strong>Filed</strong> — from an SEC filing or official results release.
-<strong>Stated</strong> — said on the record.
-<strong>Estimate</strong> — third-party analyst model.
-<strong>Reported</strong> — credible secondary reporting.</p>
+<p><strong>Filed</strong>, from an SEC filing or official results release.
+<strong>Stated</strong>, said on the record.
+<strong>Estimate</strong>, third-party analyst model.
+<strong>Reported</strong>, credible secondary reporting.</p>
 <p>Every figure carries its provenance.</p>
 <p>The concentration numbers are estimates, not disclosures.</p>
 <p>Alphabet has never broken out customer concentration.</p></div></section>
@@ -392,7 +403,7 @@ Every figure carries its provenance. The concentration numbers are estimates, no
 <tr>
 <td><strong>SpaceX</strong></td>
 <td>Supplier and holding</td>
-<td>Google pays SpaceX $920M a month for compute, Oct 2026 – Jun 2029 <span class="tag filed">Filed</span> · Alphabet's stake valued at $94.1B in the Q2 10-Q <span class="tag filed">Filed</span> — roughly 5% by outside estimates; the 10-Q gives no percentage <span class="tag estimate">Estimate</span></td>
+<td>Google pays SpaceX $920M a month for compute, Oct 2026 – Jun 2029 <span class="tag filed">Filed</span> · Alphabet's stake valued at $94.1B in the Q2 10-Q <span class="tag filed">Filed</span>, roughly 5% by outside estimates; the 10-Q gives no percentage <span class="tag estimate">Estimate</span></td>
 </tr>
 <tr>
 <td><strong>Blackstone</strong></td>
@@ -467,23 +478,23 @@ Every figure carries its provenance. The concentration numbers are estimates, no
 <section id="s7">
 <div class="sec-head"><div class="sec-label">07 · The Two-Name Problem</div><h2>What moved this year</h2></div>
 <div class="prose"><p>Most commentary still runs on 2024 figures.</p>
-<p><strong>22 Apr 2026 — The silicon moved two generations.</strong> <span class="tag stated">Stated</span></p>
+<p><strong>22 Apr 2026, The silicon moved two generations.</strong> <span class="tag stated">Stated</span></p>
 <p>Ironwood is the seventh-generation TPU.</p>
 <p>At Cloud Next, Google split the eighth in two.</p>
 <p>TPU 8t for training, scaling to 9,600-chip superpods.</p>
 <p>TPU 8i for latency-sensitive inference.</p>
-<p><strong>18 May 2026 — The financing moved off balance sheet.</strong> <span class="tag stated">Stated</span></p>
+<p><strong>18 May 2026, The financing moved off balance sheet.</strong> <span class="tag stated">Stated</span></p>
 <p>Blackstone and Google announced a US TPU cloud joint venture.</p>
 <p>$5B initial equity. 500MW targeted for 2027. Former Google infrastructure executive Benjamin Treynor Sloss as CEO.</p>
 <p>Blackstone holds the majority. <span class="tag reported">Reported</span></p>
 <p>Google keeps the silicon relationship without carrying the capital.</p>
-<p><strong>Apr 2026 — Google said it will sell the chips.</strong></p>
+<p><strong>Apr 2026, Google said it will sell the chips.</strong></p>
 <p>Google said it will deliver TPUs to a select group of customers in their own data centres, not only via Google Cloud. <span class="tag stated">Stated / Q1 2026 call</span></p>
 <p>That dilutes multi-tenant margins.</p>
 <p>Read it as a hedge, not a mistake.</p>
 <p>Selling accelerators up front pulls revenue forward against a capital base depreciating on a fixed clock.</p>
 <p>The landlord is becoming an arms dealer.</p>
-<p><strong>5 Aug 2026 — The research layer restructured.</strong> <span class="tag stated">Stated</span></p>
+<p><strong>5 Aug 2026, The research layer restructured.</strong> <span class="tag stated">Stated</span></p>
 <p>Demis Hassabis became Chair of Google DeepMind and Chief Scientist of Alphabet.</p>
 <p>Koray Kavukcuoglu took day-to-day control as SVP.</p>
 <p>Jeff Dean left after 27 years to found Discovery Loop with Sanjay Ghemawat, Oriol Vinyals and Quoc Le.</p>
@@ -508,7 +519,7 @@ Every figure carries its provenance. The concentration numbers are estimates, no
 <p>The 27% and 48% figures are UBS models, not filings.</p>
 <p>If they're materially off, the concentration argument weakens with them.</p>
 <p><strong>04 Cloud is not the whole company.</strong></p>
-<p>Google Cloud was 20.7% of Alphabet's Q2 revenue — $24.768B of $119.8B. <span class="tag filed">Filed</span></p>
+<p>Google Cloud was 20.7% of Alphabet's Q2 revenue, $24.768B of $119.8B. <span class="tag filed">Filed</span></p>
 <p>Advertising still funds everything.</p>
 <p>Concentration inside a segment is not concentration inside the company.</p></div></section>
 <section id="s9">
@@ -546,4 +557,4 @@ Every figure carries its provenance. The concentration numbers are estimates, no
 <p><em>Personal analysis. Public sources only. Not the view of any employer.</em></p></div></section>
 
 <div class="closer"><p>The demand is real. The constraint is physical. The revenue base is two names deep. All three can be true at once.</p></div>
-<footer>Gaurav Channagiri · The Autonomy Loop 04 · October 2026<br>Personal analysis. Public sources only. Not the view of any employer.</footer></div></body></html>
+<footer>Gaurav Channagiri · The Autonomy Loop 04 · October 2026<br>Personal analysis. Public sources only. Not the view of any employer.</footer></div><script>(function(){var p=document.getElementById('al-prog');if(!p)return;function u(){var h=document.documentElement;var m=h.scrollHeight-h.clientHeight;p.style.width=(m>0?h.scrollTop/m*100:0)+'%';}document.addEventListener('scroll',u,{passive:true});u();})();</script></body></html>

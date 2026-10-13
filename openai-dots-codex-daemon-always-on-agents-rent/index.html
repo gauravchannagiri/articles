@@ -1,0 +1,905 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenAI Dots and the Codex Daemon: Always-On AI Agents Turn Tokens Into Rent · The Autonomy Loop</title><meta name="description" content="Background agents never log off. That changes who pays, how and for what. A sequel to The Silent Landlord."><meta name="author" content="Gaurav Channagiri"><meta name="robots" content="noindex">
+<link rel="canonical" href="https://gauravchannagiri.github.io/articles/openai-dots-codex-daemon-always-on-agents-rent/"><meta property="og:type" content="article"><meta property="og:url" content="https://gauravchannagiri.github.io/articles/openai-dots-codex-daemon-always-on-agents-rent/"><meta property="og:title" content="OpenAI Dots and the Codex Daemon: Always-On AI Agents Turn Tokens Into Rent · The Autonomy Loop"><meta property="og:description" content="Background agents never log off. That changes who pays, how and for what. A sequel to The Silent Landlord."><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><meta name="theme-color" content="#0a0a0f"><style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --g-blue: #4285F4;
+    --g-red: #EA4335;
+    --g-yellow: #FBBC05;
+    --g-green: #34A853;
+    --g-purple: #a855f7;
+    --g-cyan: #06b6d4;
+    --g-orange: #f97316;
+    --bg: #07070b;
+    --surface: #0e0e16;
+    --surface-elevated: #161622;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.2);
+    --text: #f1f1f6;
+    --muted: #828299;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 60px 24px 40px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(circle at 50% 0%, rgba(66,133,244,0.08), transparent 70%);
+  }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--g-blue);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 108px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff 0%, #b8b8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* MAIN WRAPPER */
+  .canvas {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+    position: relative;
+  }
+
+  /* STAT BAR */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    border: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--surface);
+    padding: 22px 18px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .stat:hover { background: var(--surface-elevated); }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(30px, 3.2vw, 44px);
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* CENTER GEMINI CORE */
+  .center-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 50px;
+    position: relative;
+    z-index: 10;
+  }
+  .gemini-node {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #4285F4, #0b1c48);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    box-shadow: 0 0 60px rgba(66,133,244,0.35), 0 0 120px rgba(66,133,244,0.15);
+  }
+  .gemini-node:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 80px rgba(66,133,244,0.55), 0 0 160px rgba(66,133,244,0.3);
+  }
+  .gemini-node::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--g-blue), var(--g-red), var(--g-yellow), var(--g-green), var(--g-purple), var(--g-blue));
+    z-index: -1;
+    animation: spin 9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .gemini-icon { font-size: 40px; line-height: 1; margin-bottom: 4px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
+  .gemini-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .gemini-sub {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .pulse {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--g-blue);
+    animation: pulse-ring 3s ease-out infinite;
+    pointer-events: none;
+  }
+  .pulse:nth-child(2) { animation-delay: 1s; }
+  .pulse:nth-child(3) { animation-delay: 2s; }
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* SECTION LABELS */
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* LAYER GRID */
+  .grid {
+    display: grid;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+  /* CARDS */
+  .layer-card {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 22px 20px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-color, var(--g-blue));
+    opacity: 0.6;
+    transition: opacity 0.25s;
+  }
+  .layer-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    background: var(--surface-elevated);
+  }
+  .layer-card:hover::before { opacity: 1; }
+  .layer-card.active {
+    border-color: var(--card-color, var(--g-blue));
+    background: var(--surface-elevated);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .card-emoji { font-size: 26px; line-height: 1; }
+  .card-title-block { flex: 1; min-width: 0; }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #fff;
+  }
+  .card-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 4px;
+    background: var(--card-color, var(--g-blue));
+    color: #fff;
+    opacity: 0.9;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* PRODUCTS PILLS */
+  .products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .layer-card.active .products {
+    max-height: 260px;
+    opacity: 1;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.02);
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .pill:hover {
+    border-color: var(--card-color);
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* STRATEGIC CAPITAL CALLOUT (LAYER 10) */
+  .capital-card {
+    background: linear-gradient(135deg, rgba(26,17,40,0.6) 0%, rgba(14,20,38,0.7) 100%);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 14px;
+    padding: 26px 24px;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .capital-card::after {
+    content: 'STRATEGIC CAPITAL & POWER';
+    position: absolute;
+    top: 14px; right: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--g-purple);
+  }
+
+  /* CREATIVE STACK SPOTLIGHT */
+  .spotlight {
+    background: linear-gradient(135deg, #091224 0%, #061811 50%, #160a22 100%);
+    border-radius: 14px;
+    border: 1px solid var(--border-hover);
+    padding: 32px 28px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--g-green);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .spotlight-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pipe-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: all 0.2s;
+  }
+  .pipe-item:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .pipe-icon { font-size: 20px; }
+  .pipe-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .pipe-role {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 2px;
+  }
+  .pipe-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* FLYWHEEL LOOP */
+  .flywheel-wrap {
+    margin: 40px 0;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .flywheel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .flywheel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fw-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+  .fw-bubble {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    transition: transform 0.25s, border-color 0.25s;
+  }
+  .fw-step:hover .fw-bubble {
+    transform: scale(1.12);
+    border-color: var(--g-blue);
+  }
+  .fw-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .fw-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* ANTITRUST WARNING */
+  .alert-box {
+    border-radius: 12px;
+    border: 1px solid rgba(234,67,53,0.3);
+    background: rgba(234,67,53,0.05);
+    padding: 22px 24px;
+    margin: 20px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .alert-box .icon { font-size: 22px; flex-shrink: 0; }
+  .alert-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--g-red);
+    margin-bottom: 6px;
+  }
+  .alert-text {
+    font-size: 13px;
+    color: #a8a8b8;
+    line-height: 1.6;
+  }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    text-align: center;
+    padding: 50px 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-note p {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .footer-note .author {
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* FLOATING TOOLTIP */
+  .tip {
+    position: fixed;
+    background: #181824;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #e2e2ee;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    max-width: 250px;
+    line-height: 1.45;
+    z-index: 99999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  }
+  .tip.visible { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { flex-direction: column; align-items: stretch; }
+    .pipe-arrow { text-align: center; transform: rotate(90deg); }
+    .flywheel { flex-direction: column; gap: 14px; }
+    .fw-arrow { transform: rotate(90deg); }
+  }
+
+.prose p{margin:0 0 14px} .prose h3{margin:28px 0 10px;font-size:20px;font-weight:600;color:var(--text)}
+.prose ul,.prose ol{margin:0 0 16px 22px} .prose li{margin:0 0 8px}
+.prose a{color:var(--g-blue);text-underline-offset:3px;word-break:break-word}
+.prose blockquote{border-left:3px solid var(--g-blue);padding:6px 0 6px 18px;margin:18px 0;color:var(--muted)}
+.tblw{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--border);border-radius:12px}
+.tblw table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tblw th{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tblw td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.tblw tr:last-child td{border-bottom:0}
+.tblw thead:empty,.tblw thead tr:only-child th:empty{display:none}
+figure.xf{margin:28px auto} figure.xf svg{display:block;width:100%;height:auto}
+figure.xf figcaption{font-size:14px;color:var(--muted);margin-top:12px;line-height:1.55}
+@media(max-width:600px){.tblw table{font-size:14px} .tblw th,.tblw td{padding:9px 10px}}
+
+.prose{font-size:16px;line-height:1.75;max-width:780px;margin:0 auto}
+.slsec{margin:56px 0}
+.slsec h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,48px);letter-spacing:1px;text-align:center;margin:-8px 0 22px;font-weight:400}
+.layer-card .card-desc p{margin:0 0 8px}
+.layer-card{opacity:1!important;transform:none!important}
+.pulse{animation:none!important;display:none}
+.t{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.flywheel{flex-wrap:wrap}
+
+.al-bar{display:flex;align-items:center;gap:12px;max-width:1060px;margin:0 auto;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,0.08);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.al-bar img{width:36px;height:36px;border-radius:50%}
+.al-bar a{color:#e8e8f0;text-decoration:none}.al-bar .al-name{font-weight:500}
+.al-bar .al-series{margin-left:auto;color:#8e8ea6}
+#al-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:9;background:linear-gradient(90deg,#34A853,#00BCD4,#9c27b0,#EA4335)}
+.al-toc{margin:28px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px}
+.al-toc summary{cursor:pointer;color:#8e8ea6;text-transform:uppercase;letter-spacing:2px}
+.al-toc ol{display:inline-block;text-align:left;margin:12px auto 0;padding-left:22px;line-height:2;max-width:640px}.al-toc a{color:#c9c9d6;text-decoration:none}.al-toc a:hover{color:#fff}
+.al-fig{margin:24px 0}.al-fig img{max-width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.08)}
+.al-fig figcaption{font-family:'DM Mono',monospace;font-size:11px;color:#8e8ea6;margin-top:8px}
+
+.al-bar{display:flex;align-items:center;gap:12px;max-width:1060px;margin:0 auto;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,0.08);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.al-bar img{width:36px;height:36px;border-radius:50%}
+.al-bar a{color:#e8e8f0;text-decoration:none}.al-bar .al-name{font-weight:500}
+.al-bar .al-series{margin-left:auto;color:#8e8ea6}
+#al-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:9;background:linear-gradient(90deg,#34A853,#00BCD4,#9c27b0,#EA4335)}
+.al-toc{margin:28px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px}
+.al-toc summary{cursor:pointer;color:#8e8ea6;text-transform:uppercase;letter-spacing:2px}
+.al-toc ol{display:inline-block;text-align:left;margin:12px auto 0;padding-left:22px;line-height:2;max-width:640px}.al-toc a{color:#c9c9d6;text-decoration:none}.al-toc a:hover{color:#fff}
+.al-fig{margin:24px 0}.al-fig img{max-width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.08)}
+.al-fig figcaption{font-family:'DM Mono',monospace;font-size:11px;color:#8e8ea6;margin-top:8px}
+</style></head>
+<body><div id="al-prog"></div><div class="al-bar"><a href="../"><img src="../img/abundance-loop-logo-96.png" alt="Abundance Loop logo"></a><a class="al-name" href="../">Abundance Loop</a><span class="al-series">The Autonomy Loop · No. 09</span></div><p style="text-align:center;color:#FBBC05;font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;padding:10px">STAGED DRAFT · NOT PUBLISHED</p>
+<div class="header"><div class="eyebrow">Gaurav Channagiri · The Autonomy Loop 09 · October 2026</div>
+<h1>OpenAI Dots and the Codex Daemon: Always-On AI Agents Turn Tokens Into Rent</h1><p class="subtitle">Background agents never log off. That changes who pays, how and for what. A sequel to The Silent Landlord.</p><details class="al-toc" open><summary>Contents</summary><ol><li><a href="#01-from-landlord-to-tenant-in-residence">01, From landlord to tenant-in-residence</a></li><li><a href="#02-what-a-dot-actually-is">02, What a dot actually is</a></li><li><a href="#03-how-the-pricing-changes-shape">03, How the pricing changes shape</a></li><li><a href="#04-the-quieter-version-the-daemon-nobody-asked-for">04, The quieter version: the daemon nobody asked for</a></li><li><a href="#05-why-this-is-a-control-question-not-a-convenience-one">05, Why this is a control question, not a convenience one</a></li><li><a href="#06-credit-where-it-s-due">06, Credit where it&#x27;s due</a></li><li><a href="#07-the-tenant-s-checklist">07, The tenant&#x27;s checklist</a></li><li><a href="#evidence-appendix-paywall-candidate">Evidence appendix (paywall candidate)</a></li><li><a href="#sources">Sources</a></li></ol></details></div>
+<div class="canvas"><section class="slsec" id="intro"><div class="section-tag">OpenAI Dots and the Codex Daemon: Always-On AI Agents Turn Tokens Into Rent</div><div class="prose"><p>You used to rent a model by the call.</p>
+<p>Ask. Pay. Done.</p>
+<p>Now the agent moves in.</p>
+<p>It has its own computer.</p>
+<p>It works while you sleep.</p>
+<p>It updates itself.</p>
+<p>You don't pay per question any more.</p>
+<p>You pay to keep it living there.</p>
+<p>That's rent.</p>
+<hr />
+</div></section><section class="slsec" id="01-from-landlord-to-tenant-in-residence"><div class="section-tag">01, From landlord to tenant-in-residence</div><div class="prose">
+<p>In <em><a href="https://gauravchannagiri.substack.com/p/the-silent-landlord">The Silent Landlord</a></em> the argument was simple.</p>
+<p>Google doesn't just rent you the house.</p>
+<p>It owns the land, the power and a stake in the neighbours.</p>
+<p>This is the next floor up.</p>
+<p>The agent itself is becoming a resident.</p>
+<p>Two releases within days of each other show the shape.</p>
+<p><strong>OpenAI Dots</strong> (29 Sep 2026): "always-on agents" with their own cloud computer, working "24/7." [Stated]</p>
+<p><strong>The Codex CLI daemon</strong> (reported 25 Sep 2026): a persistent, self-updating background process that starts by default and keeps running after you close every window. [Reported, GitHub issue]</p>
+<p>One is a product.</p>
+<p>One is a default.</p>
+<p>Both point the same way.</p>
+<p>The loop never closes.</p>
+<hr />
+</div></section><section class="slsec" id="02-what-a-dot-actually-is"><div class="section-tag">02, What a dot actually is</div><div class="prose">
+<p>OpenAI's own description. [Stated]</p>
+<ul>
+<li>Powered by GPT-6 Astra.</li>
+<li>Its own cloud computer and its own browser.</li>
+<li>Connects to over 4,000 apps through plugins.</li>
+<li>Reachable in ChatGPT, Slack and Teams, with texting coming.</li>
+<li>Learns your preferences over time.</li>
+<li>When you're not working with it, it does "proactive research" in the background, using your connected apps through read-only tools.</li>
+</ul>
+<p>The pitch: work done the way you'd do it, "sometimes before you even think to ask."</p>
+<p>OpenAI's own example: an early tester's dot noticed he'd forgotten to invoice a publication, prepared the invoice and sent it after his approval. [Stated]</p>
+<p>That's genuinely useful.</p>
+<p>It's also a resident with keys.</p>
+<hr />
+</div></section><section class="slsec" id="03-how-the-pricing-changes-shape"><div class="section-tag">03, How the pricing changes shape</div><div class="prose">
+<p>Read the commercial terms slowly. [Stated]</p>
+<p>Your first dot is included in Pro or Business Premium at no extra cost.</p>
+<p>The plan includes "an allowance for deeper work."</p>
+<p>In future you'll be able to add more dots.</p>
+<p>And "scale the output of each dot by either increasing its speed or the total amount of work it can take on per month."</p>
+<p>Business Premium, one of the plans that includes a dot, is US$100 per seat per month billed annually, or US$125 billed monthly, with a minimum of 2 users. [Stated, OpenAI]</p>
+<p>Pro also includes it: Pro 100 at US$100 a month, Pro 200 at US$200, Pro 500 at US$500. [Stated, OpenAI, About ChatGPT Pro tiers]</p>
+<p>Monthly billing only.</p>
+<p>Ultrafast is only in Pro 500. [Stated]</p>
+<p>Conversations with your dot don't count toward usage limits.</p>
+<p>Tasks it starts in Codex or ChatGPT Work do.</p>
+<p>OpenAI hasn't said what a dot's work costs. [Stated]</p>
+<p>The only anchor: dots run on GPT-6 Astra. [Stated, OpenAI]</p>
+<p>At the standard context tier (up to 272K tokens), Astra lists at US$10 per million input and US$50 per million output. [Stated, platform.openai.com/docs/pricing, 13 Oct 2026]</p>
+<p>Above 272K: US$20 input, US$75 output. [Stated]</p>
+<p>At the standard tier, every million output tokens is US$50.</p>
+<p>No per-dot figure exists.</p>
+<p>Look at the units.</p>
+<p>Not tokens.</p>
+<p>Dots.</p>
+<p>Speed.</p>
+<p>Monthly capacity.</p>
+<p>That's a lease, with tiers.</p>
+<p>Per-token pricing was metered utility.</p>
+<p>You saw the meter.</p>
+<p>You could stop asking.</p>
+<p>An always-on agent never stops asking on your behalf.</p>
+<p>So the bill can't sit on each question.</p>
+<p>It has to sit on residency: how many agents live here, how fast they run, how much they may do per month.</p>
+<p>That's rent.</p>
+<hr />
+</div></section><section class="slsec" id="04-the-quieter-version-the-daemon-nobody-asked-for"><div class="section-tag">04, The quieter version: the daemon nobody asked for</div><div class="prose">
+<p>The Codex daemon is what rent looks like before it has a price.</p>
+<p>A GitHub issue filed against Codex CLI 0.157.0 describes it. [Reported]</p>
+<p>Opening an interactive session starts a persistent background daemon.</p>
+<p>It keeps running after every Codex window closes, until you stop it or reboot.</p>
+<p>It copies the whole platform package, about 374 MB, into its own directory and runs from that copy.</p>
+<p>From then on, the backend's version is decoupled from the one your package manager installed.</p>
+<p>A detached updater checks five minutes after start, then hourly, downloads new releases and restarts the backend.</p>
+<p>The issue reports restarts can kill active turns.</p>
+<p>It inherits the environment of whichever session started it, including proxy settings.</p>
+<p>The stop command leaves the updater running.</p>
+<p>The ask is modest: make it opt-in.</p>
+<p>As of 13 Oct 2026 the issue is still open, with no public reply from OpenAI. [Reported]</p>
+<p>The opt-out in <code>config.toml</code> works, users confirm. [Reported]</p>
+<p>Fair contrast: Claude Code also runs a background supervisor. [Stated, Claude Code docs]</p>
+<p>But it starts it when you ask for background work. [Stated]</p>
+<p>Codex starts its daemon every interactive session. [Reported]</p>
+<p>One is a feature you call.</p>
+<p>The other is a default you discover.</p>
+<p>At the time of writing, Hacker News had given it 423 points. [Reported]</p>
+<p>Dots got 769. [Reported]</p>
+<p>People noticed.</p>
+<hr />
+</div></section><section class="slsec" id="05-why-this-is-a-control-question-not-a-convenience-one"><div class="section-tag">05, Why this is a control question, not a convenience one</div><div class="prose">
+<p>A per-call model leaves on its own.</p>
+<p>A resident agent stays.</p>
+<p>Five things change when it stays.</p>
+<p><strong>1. Presence becomes the product.</strong>
+The value is that it's always there.
+So the price follows presence, not use.</p>
+<p><strong>2. Updates arrive on the vendor's clock.</strong>
+A self-updating daemon runs the version the vendor ships, not the one you installed. [Reported]
+Change control just moved out of your hands.</p>
+<p><strong>3. Background work is invisible work.</strong>
+Dots offer Activity View to follow background progress. [Stated]
+That's the right instinct.
+But you have to look.</p>
+<p><strong>4. Identity sprawls.</strong>
+A dot connects to apps, other devices and, with permission, your laptop. [Stated]
+OpenAI is previewing specialist dots with "their own identity for access management." [Stated]
+Every resident needs its own lease, its own keys and its own record.</p>
+<p><strong>5. Leaving gets harder every month.</strong>
+The more your dot "learns your preferences, how you think," the more of that sits inside the vendor's loop. [Stated]
+That's the swap test from <em>The Loop Left the Chat Window</em> again.
+Can you move the agent without losing what it learned?</p>
+<hr />
+</div></section><section class="slsec" id="06-credit-where-it-s-due"><div class="section-tag">06, Credit where it&#x27;s due</div><div class="prose">
+<p>OpenAI built real safeguards into Dots. [Stated]</p>
+<ul>
+<li>Each dot works on its own cloud computer, separate from yours unless you connect it.</li>
+<li>Proactive background research uses read-only tools: no sending messages, editing content or controlling your browser.</li>
+<li>Custom Rules let you allow, require approval for, or block actions.</li>
+<li>Auto-review checks actions against your instructions and rules.</li>
+<li>Some sensitive tasks, like changing a password, always stay with you.</li>
+<li>Monitoring can pause or stop a dot.</li>
+<li>Business, Enterprise and Edu content isn't used for training by default.</li>
+</ul>
+<p>That's the right design direction.</p>
+<p>The landlord installed good locks.</p>
+<p>It's still the landlord's building.</p>
+<hr />
+</div></section><section class="slsec" id="07-the-tenant-s-checklist"><div class="section-tag">07, The tenant&#x27;s checklist</div><div class="prose">
+<p>Before an always-on agent moves in, get answers.</p>
+<p><strong>What's the lease unit?</strong> Seats, agents, speed, monthly work, or tokens? Which one grows when usage grows?</p>
+<p><strong>Who controls updates?</strong> Can you pin a version? Does it update while working?</p>
+<p><strong>What runs when you're not looking?</strong> Is background activity logged somewhere you'll actually read?</p>
+<p><strong>What can it touch, read-only versus write?</strong> Is that enforced in the tools, or only in the instructions?</p>
+<p><strong>What happens when you leave?</strong> Can you export what it learned, or does it stay behind?</p>
+<p><strong>Can you evict it in one command?</strong> Fully, including the updater?</p>
+<p>If the honest answer to the last one is "mostly," that's your answer.</p>
+<hr />
+<p><strong>Read the first part:</strong> <em><a href="https://gauravchannagiri.substack.com/p/the-silent-landlord">The Silent Landlord</a></em>: who owns the land, the power and the stake in the neighbours.</p>
+<hr />
+<hr />
+<p><strong>If you want to run this yourself</strong></p>
+<p>I run a small team of AI agents with the same rules this piece argues for: one orchestrator per room, clear handoffs, and nothing goes out without my approval.</p>
+<p>I wrote up the setup.</p>
+<p>↳ <a href="https://gauravchanna.gumroad.com/l/vyqbf">My 7-Agent Team</a>: the full operating kit, with roles, prompts, approval gates and the failures to plan for. US$29.
+↳ <a href="https://gauravchanna.gumroad.com/l/bardha">Free 1-page sample</a>: the roster and the gates, so you can see if it fits first.</p>
+<p>No promises of saved hours or income. Just the structure I use.</p>
+<p><strong><a href="https://abundanceloop.substack.com">Subscribe to Abundance Loop</a></strong> to get the next Autonomy Loop essay.</p>
+</div></section><section class="slsec" id="evidence-appendix-paywall-candidate"><div class="section-tag">Evidence appendix (paywall candidate)</div><div class="prose">
+<h3>A. Codex CLI background daemon: what the issue documents [Reported, github.com/openai/codex/issues/48195, filed 25 Sep 2026]</h3>
+<table>
+<thead>
+<tr>
+<th>Behaviour</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Version</td>
+<td>Codex CLI 0.157.0, npm install, Linux (WSL2)</td>
+</tr>
+<tr>
+<td>Trigger</td>
+<td>Opening any interactive <code>codex</code> session</td>
+</tr>
+<tr>
+<td>Process</td>
+<td><code>codex app-server --managed-daemon</code>, no TTY, reparented to PID 1</td>
+</tr>
+<tr>
+<td>Lifetime</td>
+<td>Survives all windows closing, until <code>daemon stop</code> or reboot</td>
+</tr>
+<tr>
+<td>Disk</td>
+<td>~374 MB package copied into <code>~/.codex/packages/app-server-daemon/releases/&lt;version&gt;/</code></td>
+</tr>
+<tr>
+<td>Updater</td>
+<td>Detached <code>pid-update-loop</code>: first check at 5 min, then hourly; downloads and restarts the backend</td>
+</tr>
+<tr>
+<td>Side effects</td>
+<td>Restarts can kill active turns; inherits the first session's proxy environment</td>
+</tr>
+<tr>
+<td>Bug</td>
+<td><code>daemon stop</code> leaves the updater running</td>
+</tr>
+<tr>
+<td>Workaround</td>
+<td><code>codex features disable daemon_auto_start</code>, then stop the daemon, kill the updater and remove the package directory</td>
+</tr>
+<tr>
+<td>Ask</td>
+<td>Make <code>daemon_auto_start</code> opt-in for the CLI</td>
+</tr>
+<tr>
+<td>Status (13 Oct 2026)</td>
+<td>Open; 15 comments, none from OpenAI staff; only automated labels</td>
+</tr>
+<tr>
+<td>Contrast</td>
+<td>Claude Code's background supervisor (<code>claude daemon</code>, <code>--bg</code>) starts on demand [Stated, Claude Code docs]</td>
+</tr>
+</tbody>
+</table>
+<h3>B. Dots: commercial terms as published [Stated, openai.com/index/introducing-dots/, 29 Sep 2026]</h3>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>As stated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Availability</td>
+<td>Rolling out to Pro and Business Premium in eligible markets; Enterprise, Edu and Healthcare beta via admin</td>
+</tr>
+<tr>
+<td>Business Premium seat</td>
+<td>US$100/user/month annual, US$125 monthly, minimum 2 users [Stated, OpenAI business pricing]</td>
+</tr>
+<tr>
+<td>Pro</td>
+<td>Pro 100 US$100/mo · Pro 200 US$200/mo · Pro 500 US$500/mo; monthly only; Ultrafast only in Pro 500 [Stated, help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers]</td>
+</tr>
+<tr>
+<td>First dot</td>
+<td>Included at no extra cost</td>
+</tr>
+<tr>
+<td>Deeper work</td>
+<td>Plan allowance, with extended limits in the first month</td>
+</tr>
+<tr>
+<td>Future scaling</td>
+<td>Add more dots; increase each dot's speed or monthly work</td>
+</tr>
+<tr>
+<td>Usage limits</td>
+<td>Dot conversations don't count; tasks it starts in Codex or ChatGPT Work do</td>
+</tr>
+<tr>
+<td>Model price anchor</td>
+<td>GPT-6 Astra ≤272K: US$10 in / US$50 out / US$1 cached; &gt;272K: US$20 / US$75 / US$2 [Stated, platform.openai.com/docs/pricing, 13 Oct 2026]; no per-dot cost published</td>
+</tr>
+<tr>
+<td>Enterprise</td>
+<td>Specialist dots in focused pilots; integration with Microsoft Agent 365 governance</td>
+</tr>
+</tbody>
+</table>
+<h3>C. Dots safeguards mapped to the tenant checklist [Stated]</h3>
+<table>
+<thead>
+<tr>
+<th>Checklist question</th>
+<th>What Dots documents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What runs unattended?</td>
+<td>Proactive research with read-only tools; Activity View</td>
+</tr>
+<tr>
+<td>What can it touch?</td>
+<td>App permissions via ChatGPT controls; Custom Rules: allow, approve, block</td>
+</tr>
+<tr>
+<td>Who reviews actions?</td>
+<td>Auto-review against your instructions, rules and safety requirements</td>
+</tr>
+<tr>
+<td>Can it be stopped?</td>
+<td>Monitoring can pause or stop a dot</td>
+</tr>
+<tr>
+<td>Training on your data?</td>
+<td>Off by default for Business, Enterprise and Edu</td>
+</tr>
+<tr>
+<td>Pin versions / export learning / full eviction?</td>
+<td>Not addressed in the launch post</td>
+</tr>
+</tbody>
+</table>
+<h3>D. Attention signal [Reported, Hacker News, at the time of writing]</h3>
+<table>
+<thead>
+<tr>
+<th>Story</th>
+<th>Points</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Dots: Always-on agents"</td>
+<td>769</td>
+<td>647</td>
+</tr>
+<tr>
+<td>"Codex CLI installs a persistent self-updating background daemon by default"</td>
+<td>423</td>
+<td>222</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></section><section class="slsec" id="sources"><div class="section-tag">Sources</div><div class="prose">
+<ul>
+<li>OpenAI, "Introducing dots," 29 Sep 2026. https://openai.com/index/introducing-dots/ (via Hacker News, https://news.ycombinator.com/item?id=49896604)</li>
+<li>GitHub, openai/codex issue #48195, "CLI: make <code>daemon_auto_start</code> opt-in," 25 Sep 2026. https://github.com/openai/codex/issues/48195 (via Hacker News, https://news.ycombinator.com/item?id=50060694)</li>
+<li>OpenAI, About ChatGPT Pro tiers. https://help.openai.com/en/articles/9793128-about-chatgpt-pro-tiers</li>
+<li>OpenAI, ChatGPT Business overview and business pricing. https://help.openai.com/en/articles/8792828-chatgpt-business-overview · https://openai.com/api/pricing/</li>
+<li>OpenAI API pricing (GPT-6 Astra). https://platform.openai.com/docs/pricing</li>
+<li>Claude Code CLI reference and corporate launcher docs. https://code.claude.com/docs/en/cli-reference · https://code.claude.com/docs/en/corporate-launcher</li>
+<li>Gaurav Channagiri, "The Silent Landlord," The Autonomy Loop. https://gauravchannagiri.substack.com/p/the-silent-landlord</li>
+</ul>
+<hr />
+<p>Per-token was a meter.</p>
+<p>Always-on is a lease.</p>
+<p>Read it before you sign.</p>
+<p><em>Personal analysis. Public sources only. Not the view of any employer.</em></p>
+<h1>AIAgents #OpenAI #Codex #AIPricing #TheAutonomyLoop</h1></div></section>
+<p style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:30px 0 60px">Gaurav Channagiri · Abundance Loop · The Autonomy Loop 09 · October 2026<br>Personal analysis. Public sources only. Not the view of any employer.</p>
+</div><script>(function(){var p=document.getElementById('al-prog');if(!p)return;function u(){var h=document.documentElement;var m=h.scrollHeight-h.clientHeight;p.style.width=(m>0?h.scrollTop/m*100:0)+'%';}document.addEventListener('scroll',u,{passive:true});u();})();</script></body></html>

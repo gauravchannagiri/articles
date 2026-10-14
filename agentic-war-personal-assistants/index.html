@@ -1,0 +1,789 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Agentic War Is Here. Almost Nobody Has Tried the Weapons. · The Autonomy Loop</title><meta name="description" content="Five personal AI assistants, one honest comparison, and why a paywall decides more than a feature list."><meta name="author" content="Gaurav Channagiri"><meta name="robots" content="noindex">
+<link rel="canonical" href="https://gauravchannagiri.github.io/articles/agentic-war-personal-assistants/"><meta property="og:type" content="article"><meta property="og:url" content="https://gauravchannagiri.github.io/articles/agentic-war-personal-assistants/"><meta property="og:title" content="The Agentic War Is Here. Almost Nobody Has Tried the Weapons. · The Autonomy Loop"><meta property="og:description" content="Five personal AI assistants, one honest comparison, and why a paywall decides more than a feature list."><meta property="og:image" content="https://gauravchannagiri.github.io/articles/agentic-war-personal-assistants/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The Agentic War Is Here. Almost Nobody Has Tried the Weapons. · The Autonomy Loop"><meta name="twitter:description" content="Five personal AI assistants, one honest comparison, and why a paywall decides more than a feature list."><meta name="twitter:image" content="https://gauravchannagiri.github.io/articles/agentic-war-personal-assistants/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><meta name="theme-color" content="#0a0a0f"><style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --g-blue: #4285F4;
+    --g-red: #EA4335;
+    --g-yellow: #FBBC05;
+    --g-green: #34A853;
+    --g-purple: #a855f7;
+    --g-cyan: #06b6d4;
+    --g-orange: #f97316;
+    --bg: #07070b;
+    --surface: #0e0e16;
+    --surface-elevated: #161622;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.2);
+    --text: #f1f1f6;
+    --muted: #828299;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 60px 24px 40px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(circle at 50% 0%, rgba(66,133,244,0.08), transparent 70%);
+  }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--g-blue);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 108px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff 0%, #b8b8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* MAIN WRAPPER */
+  .canvas {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+    position: relative;
+  }
+
+  /* STAT BAR */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    border: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--surface);
+    padding: 22px 18px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .stat:hover { background: var(--surface-elevated); }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(30px, 3.2vw, 44px);
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* CENTER GEMINI CORE */
+  .center-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 50px;
+    position: relative;
+    z-index: 10;
+  }
+  .gemini-node {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #4285F4, #0b1c48);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    box-shadow: 0 0 60px rgba(66,133,244,0.35), 0 0 120px rgba(66,133,244,0.15);
+  }
+  .gemini-node:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 80px rgba(66,133,244,0.55), 0 0 160px rgba(66,133,244,0.3);
+  }
+  .gemini-node::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--g-blue), var(--g-red), var(--g-yellow), var(--g-green), var(--g-purple), var(--g-blue));
+    z-index: -1;
+    animation: spin 9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .gemini-icon { font-size: 40px; line-height: 1; margin-bottom: 4px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
+  .gemini-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .gemini-sub {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .pulse {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--g-blue);
+    animation: pulse-ring 3s ease-out infinite;
+    pointer-events: none;
+  }
+  .pulse:nth-child(2) { animation-delay: 1s; }
+  .pulse:nth-child(3) { animation-delay: 2s; }
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* SECTION LABELS */
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* LAYER GRID */
+  .grid {
+    display: grid;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+  /* CARDS */
+  .layer-card {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 22px 20px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-color, var(--g-blue));
+    opacity: 0.6;
+    transition: opacity 0.25s;
+  }
+  .layer-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    background: var(--surface-elevated);
+  }
+  .layer-card:hover::before { opacity: 1; }
+  .layer-card.active {
+    border-color: var(--card-color, var(--g-blue));
+    background: var(--surface-elevated);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .card-emoji { font-size: 26px; line-height: 1; }
+  .card-title-block { flex: 1; min-width: 0; }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #fff;
+  }
+  .card-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 4px;
+    background: var(--card-color, var(--g-blue));
+    color: #fff;
+    opacity: 0.9;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* PRODUCTS PILLS */
+  .products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .layer-card.active .products {
+    max-height: 260px;
+    opacity: 1;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.02);
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .pill:hover {
+    border-color: var(--card-color);
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* STRATEGIC CAPITAL CALLOUT (LAYER 10) */
+  .capital-card {
+    background: linear-gradient(135deg, rgba(26,17,40,0.6) 0%, rgba(14,20,38,0.7) 100%);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 14px;
+    padding: 26px 24px;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .capital-card::after {
+    content: 'STRATEGIC CAPITAL & POWER';
+    position: absolute;
+    top: 14px; right: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--g-purple);
+  }
+
+  /* CREATIVE STACK SPOTLIGHT */
+  .spotlight {
+    background: linear-gradient(135deg, #091224 0%, #061811 50%, #160a22 100%);
+    border-radius: 14px;
+    border: 1px solid var(--border-hover);
+    padding: 32px 28px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--g-green);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .spotlight-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pipe-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: all 0.2s;
+  }
+  .pipe-item:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .pipe-icon { font-size: 20px; }
+  .pipe-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .pipe-role {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 2px;
+  }
+  .pipe-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* FLYWHEEL LOOP */
+  .flywheel-wrap {
+    margin: 40px 0;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .flywheel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .flywheel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fw-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+  .fw-bubble {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    transition: transform 0.25s, border-color 0.25s;
+  }
+  .fw-step:hover .fw-bubble {
+    transform: scale(1.12);
+    border-color: var(--g-blue);
+  }
+  .fw-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .fw-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* ANTITRUST WARNING */
+  .alert-box {
+    border-radius: 12px;
+    border: 1px solid rgba(234,67,53,0.3);
+    background: rgba(234,67,53,0.05);
+    padding: 22px 24px;
+    margin: 20px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .alert-box .icon { font-size: 22px; flex-shrink: 0; }
+  .alert-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--g-red);
+    margin-bottom: 6px;
+  }
+  .alert-text {
+    font-size: 13px;
+    color: #a8a8b8;
+    line-height: 1.6;
+  }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    text-align: center;
+    padding: 50px 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-note p {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .footer-note .author {
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* FLOATING TOOLTIP */
+  .tip {
+    position: fixed;
+    background: #181824;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #e2e2ee;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    max-width: 250px;
+    line-height: 1.45;
+    z-index: 99999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  }
+  .tip.visible { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { flex-direction: column; align-items: stretch; }
+    .pipe-arrow { text-align: center; transform: rotate(90deg); }
+    .flywheel { flex-direction: column; gap: 14px; }
+    .fw-arrow { transform: rotate(90deg); }
+  }
+
+.prose p{margin:0 0 14px} .prose h3{margin:28px 0 10px;font-size:20px;font-weight:600;color:var(--text)}
+.prose ul,.prose ol{margin:0 0 16px 22px} .prose li{margin:0 0 8px}
+.prose a{color:var(--g-blue);text-underline-offset:3px;word-break:break-word}
+.prose blockquote{border-left:3px solid var(--g-blue);padding:6px 0 6px 18px;margin:18px 0;color:var(--muted)}
+.tblw{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--border);border-radius:12px}
+.tblw table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tblw th{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tblw td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.tblw tr:last-child td{border-bottom:0}
+.tblw thead:empty,.tblw thead tr:only-child th:empty{display:none}
+figure.xf{margin:28px auto} figure.xf svg{display:block;width:100%;height:auto}
+figure.xf figcaption{font-size:14px;color:var(--muted);margin-top:12px;line-height:1.55}
+@media(max-width:600px){.tblw table{font-size:14px} .tblw th,.tblw td{padding:9px 10px}}
+
+.prose{font-size:16px;line-height:1.75;max-width:780px;margin:0 auto}
+.slsec{margin:56px 0}
+.slsec h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,48px);letter-spacing:1px;text-align:center;margin:-8px 0 22px;font-weight:400}
+.layer-card .card-desc p{margin:0 0 8px}
+.layer-card{opacity:1!important;transform:none!important}
+.pulse{animation:none!important;display:none}
+.t{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.flywheel{flex-wrap:wrap}
+
+.al-bar{display:flex;align-items:center;gap:12px;max-width:1060px;margin:0 auto;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,0.08);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.al-bar img{width:36px;height:36px;border-radius:50%}
+.al-bar a{color:#e8e8f0;text-decoration:none}.al-bar .al-name{font-weight:500}
+.al-bar .al-series{margin-left:auto;color:#8e8ea6}
+#al-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:9;background:linear-gradient(90deg,#34A853,#00BCD4,#9c27b0,#EA4335)}
+.al-toc{margin:28px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px}
+.al-toc summary{cursor:pointer;color:#8e8ea6;text-transform:uppercase;letter-spacing:2px}
+.al-toc ol{display:inline-block;text-align:left;margin:12px auto 0;padding-left:22px;line-height:2;max-width:640px}.al-toc a{color:#c9c9d6;text-decoration:none}.al-toc a:hover{color:#fff}
+.al-fig{margin:24px 0}.al-fig img{max-width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.08)}
+.al-fig figcaption{font-family:'DM Mono',monospace;font-size:11px;color:#8e8ea6;margin-top:8px}
+</style></head>
+<body><div id="al-prog"></div><div class="al-bar"><a href="../"><img src="../img/abundance-loop-logo-96.png" alt="Abundance Loop logo"></a><a class="al-name" href="../">Abundance Loop</a><span class="al-series">The Autonomy Loop · No. 12</span></div><p style="text-align:center;color:#FBBC05;font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;padding:10px">STAGED DRAFT · NOT PUBLISHED</p>
+<div class="header"><div class="eyebrow">Gaurav Channagiri · The Autonomy Loop 12 · TBC</div>
+<h1>The Agentic War Is Here. Almost Nobody Has Tried the Weapons.</h1><p class="subtitle">Five personal AI assistants, one honest comparison, and why a paywall decides more than a feature list.</p><details class="al-toc" open><summary>Contents</summary><ol><li><a href="#the-quick-view">The quick view</a></li><li><a href="#1-grok-bot-the-team-builder">1. Grok Bot: the team builder</a></li><li><a href="#2-gemini-tasks-formerly-spark-the-one-already-in-your-inbox">2. Gemini Tasks (formerly Spark): the one already in your inbox</a></li><li><a href="#3-cue-by-manus-the-one-with-a-phone">3. Cue by Manus: the one with a phone</a></li><li><a href="#4-muse-by-meta-the-one-you-probably-can-t-use-yet">4. Muse by Meta: the one you probably can&#x27;t use yet</a></li><li><a href="#5-chatgpt-dots-the-always-on-one-behind-a-velvet-rope">5. ChatGPT Dots: the always-on one behind a velvet rope</a></li><li><a href="#there-is-no-single-winner">There is no single winner</a></li><li><a href="#what-i-m-watching-next">What I&#x27;m watching next</a></li><li><a href="#evidence-appendix">Evidence appendix</a></li></ol></details></div>
+<div class="canvas"><section class="slsec" id="intro"><div class="section-tag">The Agentic War Is Here. Almost Nobody Has Tried the Weapons.</div><div class="prose"><p>Something shifted in the last six months.</p>
+<p>Chatbots stopped waiting for you to type.</p>
+<p>They started working while you sleep.</p>
+<p>Google launched Gemini Spark on 19 May 2026.</p>
+<p>Manus launched Cue on 28 September.</p>
+<p>OpenAI launched ChatGPT Dots the next day.</p>
+<p>xAI has Grok Bot.</p>
+<p>Meta has Muse.</p>
+<p>Five companies.</p>
+<p>Five bets on the same idea.</p>
+<p>An assistant that does not just answer.</p>
+<p>It acts.</p>
+<p>Call it the agentic war.</p>
+<p>Here is the strange part.</p>
+<p>Most people talking about it have never used two of the five.</p>
+<p>Cue is invite-only.</p>
+<p>Dots sits behind ChatGPT Pro.</p>
+<p>So the loudest opinions come from the fewest hands-on hours.</p>
+<p>I wanted a clearer picture.</p>
+<p>So I put the five side by side, using only what the companies and credible coverage actually say.</p>
+<p>No hype.</p>
+<p>No winner declared.</p>
+<p>Each one has a real market.</p>
+<hr />
+</div></section><section class="slsec" id="the-quick-view"><div class="section-tag">The quick view</div><div class="prose">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Grok Bot (xAI)</th>
+<th>Gemini Tasks (formerly Spark; Google)</th>
+<th>Cue (Manus)</th>
+<th>Muse (Meta)</th>
+<th>ChatGPT Dots (OpenAI)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core idea</td>
+<td>Named Bots on a shared cloud computer</td>
+<td>Background agent across Workspace</td>
+<td>Agents with their own identity</td>
+<td>Errands across apps</td>
+<td>Always-on agent with its own cloud computer</td>
+</tr>
+<tr>
+<td>Own phone number</td>
+<td>Not found</td>
+<td>Not found</td>
+<td>Yes, takes calls</td>
+<td>Unknown</td>
+<td>Not found; texting is Pro waitlist only</td>
+</tr>
+<tr>
+<td>Money</td>
+<td>Purchases need approval</td>
+<td>Asks before spending</td>
+<td>Own card, your budget, you confirm</td>
+<td>Makes payments, details unknown</td>
+<td>No source found</td>
+</tr>
+<tr>
+<td>Multi-agent</td>
+<td>Yes, group chats and handoffs</td>
+<td>Single agent</td>
+<td>Yes, group chats and handoffs</td>
+<td>Unknown</td>
+<td>One dot now, teams planned</td>
+</tr>
+<tr>
+<td>Price to start</td>
+<td>SuperGrok or Cursor plans</td>
+<td>Google AI Pro or Ultra</td>
+<td>Free in early access</td>
+<td>Free basic tier</td>
+<td>ChatGPT Pro</td>
+</tr>
+<tr>
+<td>In Australia</td>
+<td>Beta, not restricted in what I found</td>
+<td>Yes, by Google's listed regions</td>
+<td>Unknown [CHECK]</td>
+<td>No, US and Canada only</td>
+<td>Pro users outside EEA, UK, CH; gradual rollout</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></section><section class="slsec" id="1-grok-bot-the-team-builder"><div class="section-tag">1. Grok Bot: the team builder</div><div class="prose">
+<p>Grok Bot gives you named Bots, not one assistant.</p>
+<p>They share one persistent cloud computer, with a browser and a terminal.</p>
+<p>Each Bot gets its own screen.</p>
+<p>They connect to your apps, run routines, talk to each other in group chats and hand work off.</p>
+<p>Anything risky comes back to you as an approval card.</p>
+<p>Purchases need your sign-off.</p>
+<p>It is included with SuperGrok, SuperGrok Plus, SuperGrok Heavy, and Cursor Pro, Pro+, Ultra and Teams plans, with its own usage allowance.</p>
+<p>It runs on iOS and desktop.</p>
+<p>Who it suits: people who want a small crew of specialists, not a single helper.</p>
+<p>What it lacks today: a phone number or a wallet of its own.</p>
+<hr />
+</div></section><section class="slsec" id="2-gemini-tasks-formerly-spark-the-one-already-in-your-inbox"><div class="section-tag">2. Gemini Tasks (formerly Spark): the one already in your inbox</div><div class="prose">
+<p>Google's 24/7 agent still lives inside the Gemini app. The UI now labels it Task (Chat/Task toggle), after folding Spark into the main chat from about 1 Oct on web and 12 Oct on Android.</p>
+<p>It works in the background across Workspace and connected apps, including MCP.</p>
+<p>It handles tasks, skills and schedules.</p>
+<p>It uses your Gmail rather than an address of its own.</p>
+<p>It asks before spending money, and Chrome auto browse can shop.</p>
+<p>It needs Google AI Pro or Ultra.</p>
+<p>It works on mobile, Mac and web.</p>
+<p>In Australia, it should work, since Google lists it everywhere Gemini works except the EEA, UK, Switzerland and Nigeria.</p>
+<p>Custom MCP apps are US only for now.</p>
+<p>Who it suits: anyone whose life already runs on Gmail, Calendar and Docs.</p>
+<p>The advantage is gravity.</p>
+<p>Your data is already there.</p>
+<hr />
+</div></section><section class="slsec" id="3-cue-by-manus-the-one-with-a-phone"><div class="section-tag">3. Cue by Manus: the one with a phone</div><div class="prose">
+<p>Cue is the most radical design of the five.</p>
+<p>Each agent gets its own email address, its own phone number, its own card and its own computer workspace.</p>
+<p>It can take calls.</p>
+<p>It pays with its own card, inside a budget you set, and you confirm payments.</p>
+<p>It has memory, automations, group chats with handoffs, and QR "service agents" for places like cafés.</p>
+<p>It runs on web, desktop and iOS.</p>
+<p>It is free during invite-only early access.</p>
+<p>Nobody has published what it will cost after that.</p>
+<p>Now the honest part.</p>
+<p>Cue has launch coverage, not independent reviews.</p>
+<p>I found no independent security audit.</p>
+<p>The card issuer is not published.</p>
+<p>Liability and refund terms are not published.</p>
+<p>Privacy falls under the general Manus policy, with nothing specific on call recordings or data residency.</p>
+<p>Manus is reportedly raising at a US$4B valuation after Beijing blocked a planned deal with Meta.</p>
+<p>That is a company under real regulatory attention.</p>
+<p>Who it suits: mobile-first people with lots of errands.</p>
+<p>Calls.</p>
+<p>Bookings.</p>
+<p>Orders.</p>
+<p>If I had one invite, my test would be small.</p>
+<p>One throwaway agent.</p>
+<p>No connectors.</p>
+<p>A tiny spending limit with approval on every payment.</p>
+<p>One test call, then check what was stored.</p>
+<p>Export and deletion tested before any real account goes near it.</p>
+<hr />
+</div></section><section class="slsec" id="4-muse-by-meta-the-one-you-probably-can-t-use-yet"><div class="section-tag">4. Muse by Meta: the one you probably can&#x27;t use yet</div><div class="prose">
+<p>Muse handles email, bookings and purchases across apps.</p>
+<p>It runs on iOS, Android and WhatsApp.</p>
+<p>That last one matters.</p>
+<p>WhatsApp is where a huge share of the world already talks.</p>
+<p>There is a free basic tier, with paid plans at US$20 or US$100 a month, per Reuters via ChannelNews.</p>
+<p>It is available in the US and Canada.</p>
+<p>It is not available in Australia, and there is no announced date.</p>
+<p>Most of the coverage I found is third-party, so treat details with care.</p>
+<p>Who it suits: people who live in WhatsApp and want an assistant without learning a new app.</p>
+<hr />
+</div></section><section class="slsec" id="5-chatgpt-dots-the-always-on-one-behind-a-velvet-rope"><div class="section-tag">5. ChatGPT Dots: the always-on one behind a velvet rope</div><div class="prose">
+<p>OpenAI launched Dots on 29 September 2026.</p>
+<p>It is an always-on agent running on GPT-6 Astra.</p>
+<p>It has its own cloud computer, connected apps, memory and Custom Rules.</p>
+<p>Those rules let you allow, approve or block what it does.</p>
+<p>That is a thoughtful control model.</p>
+<p>It lives inside ChatGPT on mobile, web and desktop, though setup has to start on desktop.</p>
+<p>There is one dot at launch.</p>
+<p>More dots, and "teams of dots", are planned.</p>
+<p>Texting by iMessage or RCS is waitlist-only for Pro users.</p>
+<p>The first dot is included with Pro or Business Premium at no extra cost.</p>
+<p>Pro is reported at US$100, US$200 or US$500 a month, per Engadget, not OpenAI.</p>
+<p>I could not find a clear trial policy either way.</p>
+<p>Here is my problem with that.</p>
+<p>Not with the product.</p>
+<p>With the door.</p>
+<p>An always-on agent is a trust decision.</p>
+<p>You hand it your apps, your memory, your routines.</p>
+<p>The only way to know if it earns that trust is to live with it for a week.</p>
+<p>Putting it behind the top tier means most people have to pay first and find out later.</p>
+<p>That turns a test into a commitment.</p>
+<p>It also means the people forming opinions about Dots are mostly people who already pay for the most expensive plan.</p>
+<p>That is a narrow lens on a product meant for everyone.</p>
+<p>Who it suits: existing Pro users who want their ChatGPT to keep working when they close the tab.</p>
+<hr />
+</div></section><section class="slsec" id="there-is-no-single-winner"><div class="section-tag">There is no single winner</div><div class="prose">
+<p>That is the point.</p>
+<p>Each one is built for a different person.</p>
+<p>The builder who wants a team: Grok Bot.</p>
+<p>The Google household: Gemini Tasks (formerly Spark).</p>
+<p>The errand runner who wants a real phone and card: Cue.</p>
+<p>The WhatsApp-first user in North America: Muse.</p>
+<p>The ChatGPT power user already on Pro: Dots.</p>
+<p>The war is not about one assistant beating the rest.</p>
+<p>It is about who gets let in to try.</p>
+<p>Invite codes and top-tier paywalls slow that down.</p>
+<p>Free tiers and existing plans speed it up.</p>
+<p>The assistant people can actually test is the one they will learn to trust.</p>
+<p>Access is the real battlefield.</p>
+<hr />
+</div></section><section class="slsec" id="what-i-m-watching-next"><div class="section-tag">What I&#x27;m watching next</div><div class="prose">
+<p>What Cue costs after early access.</p>
+<p>Whether Dots gets a cheaper door.</p>
+<p>When Muse reaches Australia.</p>
+<p>Whether anyone publishes a proper independent security review of an agent that holds its own card.</p>
+<p>I'll write about each one as the evidence lands.</p>
+<p>If you want that in your inbox, without the hype, subscribe at <strong><a href="https://abundanceloop.substack.com">abundanceloop.substack.com</a></strong>.</p>
+<p>Try before you trust.</p>
+<hr />
+<h1>AIAgents #PersonalAI #AgenticAI #GrokBot #Gemini #Manus #ChatGPT #Meta #FutureOfWork</h1>
+<hr />
+</div></section><section class="slsec" id="evidence-appendix"><div class="section-tag">Evidence appendix</div><div class="prose">
+<p>All claims are as of 14 Oct 2026.</p>
+<ul>
+<li>Grok Bot overview, shared cloud computer, own screen per Bot, group chats, handoffs: https://docs.x.ai/grok-bot/overview</li>
+<li>Grok Bot approvals and purchases: https://docs.x.ai/grok-bot/approvals-security-and-privacy</li>
+<li>Grok Bot plans and platforms: https://x.ai/news/introducing-grok-bot</li>
+<li>Gemini Spark launch, 19 May 2026: https://blog.google/innovation-and-ai/products/gemini-app/next-evolution-gemini-app/</li>
+<li>Gemini Spark features: https://gemini.google/overview/agent/spark/</li>
+<li>Gemini Spark plans, regions, platforms, Chrome auto browse: https://support.google.com/gemini/answer/17094507</li>
+<li>Spark folded into Gemini as Task (Chat/Task toggle; settings renamed Task settings), Oct 2026 rollout: https://9to5google.com/2026/10/12/gemini-spark-task-redesign/</li>
+<li>Gemini custom MCP apps US only: https://support.google.com/gemini/answer/17209137</li>
+<li>Cue launch and features (Manus 2.0): https://manus.im/blog/introducing-manus-2-0</li>
+<li>Cue site: https://cue.im/</li>
+<li>Cue App Store listing, invite-only, free early access: https://apps.apple.com/gb/app/cue-by-manus/id6808613358</li>
+<li>Cue launch date and Manus valuation report: https://theagentlog.com/updates/2026-09-28-manus-cue-launch/ and https://runtimewire.com/article/manus-cue-personal-agents-launch</li>
+<li>Manus privacy policy: https://manus.im/privacy</li>
+<li>Muse features and pricing (Reuters via ChannelNews): channelnews.com.au, Muse AI agent coverage [CHECK full URL]</li>
+<li>Muse availability, US and Canada only: https://www.allthingsmuse.com/articles/muse-availability-us-canada-only/ (also aivy.com.au)</li>
+<li>ChatGPT Dots launch, 29 Sep 2026: https://openai.com/index/introducing-dots/</li>
+<li>ChatGPT Dots features: https://chatgpt.com/features/dots/</li>
+<li>ChatGPT Dots eligibility and inclusion with Pro: https://help.openai.com/en/articles/20001530</li>
+<li>ChatGPT Dots texting waitlist: https://www.wired.com/story/openai-dots-always-on-ai-agents-that-proactively-help/</li>
+<li>ChatGPT Pro pricing (Engadget, not OpenAI): engadget.com/2281998 [CHECK full URL]</li>
+</ul></div></section>
+<p style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:30px 0 60px">Gaurav Channagiri · Abundance Loop · The Autonomy Loop 12 · TBC</p>
+</div><script>(function(){var p=document.getElementById('al-prog');if(!p)return;function u(){var h=document.documentElement;var m=h.scrollHeight-h.clientHeight;p.style.width=(m>0?h.scrollTop/m*100:0)+'%';}document.addEventListener('scroll',u,{passive:true});u();})();</script></body></html>

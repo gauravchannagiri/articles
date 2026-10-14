@@ -1,0 +1,939 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenAI, Anthropic and AISI Agent Incidents: Blast Radius · The Autonomy Loop</title><meta name="description" content="Seven primary reports. Every incident here happened in testing. The question is how far the damage can travel when an agent leaves the script."><meta name="author" content="Gaurav Channagiri"><meta name="robots" content="noindex">
+<link rel="canonical" href="https://gauravchannagiri.github.io/articles/openai-anthropic-aisi-agent-security-blast-radius/"><meta property="og:type" content="article"><meta property="og:url" content="https://gauravchannagiri.github.io/articles/openai-anthropic-aisi-agent-security-blast-radius/"><meta property="og:title" content="OpenAI, Anthropic and AISI Agent Incidents: Blast Radius · The Autonomy Loop"><meta property="og:description" content="Seven primary reports. Every incident here happened in testing. The question is how far the damage can travel when an agent leaves the script."><meta property="og:image" content="https://gauravchannagiri.github.io/articles/openai-anthropic-aisi-agent-security-blast-radius/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="OpenAI, Anthropic and AISI Agent Incidents: Blast Radius · The Autonomy Loop"><meta name="twitter:description" content="Seven primary reports. Every incident here happened in testing. The question is how far the damage can travel when an agent leaves the script."><meta name="twitter:image" content="https://gauravchannagiri.github.io/articles/openai-anthropic-aisi-agent-security-blast-radius/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><meta name="theme-color" content="#0a0a0f"><style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --g-blue: #4285F4;
+    --g-red: #EA4335;
+    --g-yellow: #FBBC05;
+    --g-green: #34A853;
+    --g-purple: #a855f7;
+    --g-cyan: #06b6d4;
+    --g-orange: #f97316;
+    --bg: #07070b;
+    --surface: #0e0e16;
+    --surface-elevated: #161622;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.2);
+    --text: #f1f1f6;
+    --muted: #828299;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 60px 24px 40px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(circle at 50% 0%, rgba(66,133,244,0.08), transparent 70%);
+  }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--g-blue);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 108px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff 0%, #b8b8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* MAIN WRAPPER */
+  .canvas {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+    position: relative;
+  }
+
+  /* STAT BAR */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 50px;
+    border: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--surface);
+    padding: 22px 18px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .stat:hover { background: var(--surface-elevated); }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(30px, 3.2vw, 44px);
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* CENTER GEMINI CORE */
+  .center-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 50px;
+    position: relative;
+    z-index: 10;
+  }
+  .gemini-node {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #4285F4, #0b1c48);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    box-shadow: 0 0 60px rgba(66,133,244,0.35), 0 0 120px rgba(66,133,244,0.15);
+  }
+  .gemini-node:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 80px rgba(66,133,244,0.55), 0 0 160px rgba(66,133,244,0.3);
+  }
+  .gemini-node::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--g-blue), var(--g-red), var(--g-yellow), var(--g-green), var(--g-purple), var(--g-blue));
+    z-index: -1;
+    animation: spin 9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .gemini-icon { font-size: 40px; line-height: 1; margin-bottom: 4px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
+  .gemini-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .gemini-sub {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .pulse {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--g-blue);
+    animation: pulse-ring 3s ease-out infinite;
+    pointer-events: none;
+  }
+  .pulse:nth-child(2) { animation-delay: 1s; }
+  .pulse:nth-child(3) { animation-delay: 2s; }
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* SECTION LABELS */
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* LAYER GRID */
+  .grid {
+    display: grid;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+  /* CARDS */
+  .layer-card {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 22px 20px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-color, var(--g-blue));
+    opacity: 0.6;
+    transition: opacity 0.25s;
+  }
+  .layer-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    background: var(--surface-elevated);
+  }
+  .layer-card:hover::before { opacity: 1; }
+  .layer-card.active {
+    border-color: var(--card-color, var(--g-blue));
+    background: var(--surface-elevated);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .card-emoji { font-size: 26px; line-height: 1; }
+  .card-title-block { flex: 1; min-width: 0; }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #fff;
+  }
+  .card-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 4px;
+    background: var(--card-color, var(--g-blue));
+    color: #fff;
+    opacity: 0.9;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* PRODUCTS PILLS */
+  .products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .layer-card.active .products {
+    max-height: 260px;
+    opacity: 1;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.02);
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .pill:hover {
+    border-color: var(--card-color);
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* STRATEGIC CAPITAL CALLOUT (LAYER 10) */
+  .capital-card {
+    background: linear-gradient(135deg, rgba(26,17,40,0.6) 0%, rgba(14,20,38,0.7) 100%);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 14px;
+    padding: 26px 24px;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .capital-card::after {
+    content: 'STRATEGIC CAPITAL & POWER';
+    position: absolute;
+    top: 14px; right: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--g-purple);
+  }
+
+  /* CREATIVE STACK SPOTLIGHT */
+  .spotlight {
+    background: linear-gradient(135deg, #091224 0%, #061811 50%, #160a22 100%);
+    border-radius: 14px;
+    border: 1px solid var(--border-hover);
+    padding: 32px 28px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--g-green);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .spotlight-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pipe-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: all 0.2s;
+  }
+  .pipe-item:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .pipe-icon { font-size: 20px; }
+  .pipe-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .pipe-role {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 2px;
+  }
+  .pipe-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* FLYWHEEL LOOP */
+  .flywheel-wrap {
+    margin: 40px 0;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .flywheel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .flywheel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fw-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+  .fw-bubble {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    transition: transform 0.25s, border-color 0.25s;
+  }
+  .fw-step:hover .fw-bubble {
+    transform: scale(1.12);
+    border-color: var(--g-blue);
+  }
+  .fw-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .fw-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* ANTITRUST WARNING */
+  .alert-box {
+    border-radius: 12px;
+    border: 1px solid rgba(234,67,53,0.3);
+    background: rgba(234,67,53,0.05);
+    padding: 22px 24px;
+    margin: 20px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .alert-box .icon { font-size: 22px; flex-shrink: 0; }
+  .alert-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--g-red);
+    margin-bottom: 6px;
+  }
+  .alert-text {
+    font-size: 13px;
+    color: #a8a8b8;
+    line-height: 1.6;
+  }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    text-align: center;
+    padding: 50px 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-note p {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .footer-note .author {
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* FLOATING TOOLTIP */
+  .tip {
+    position: fixed;
+    background: #181824;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #e2e2ee;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    max-width: 250px;
+    line-height: 1.45;
+    z-index: 99999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  }
+  .tip.visible { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { flex-direction: column; align-items: stretch; }
+    .pipe-arrow { text-align: center; transform: rotate(90deg); }
+    .flywheel { flex-direction: column; gap: 14px; }
+    .fw-arrow { transform: rotate(90deg); }
+  }
+
+.prose p{margin:0 0 14px} .prose h3{margin:28px 0 10px;font-size:20px;font-weight:600;color:var(--text)}
+.prose ul,.prose ol{margin:0 0 16px 22px} .prose li{margin:0 0 8px}
+.prose a{color:var(--g-blue);text-underline-offset:3px;word-break:break-word}
+.prose blockquote{border-left:3px solid var(--g-blue);padding:6px 0 6px 18px;margin:18px 0;color:var(--muted)}
+.tblw{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--border);border-radius:12px}
+.tblw table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tblw th{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tblw td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.tblw tr:last-child td{border-bottom:0}
+.tblw thead:empty,.tblw thead tr:only-child th:empty{display:none}
+figure.xf{margin:28px auto} figure.xf svg{display:block;width:100%;height:auto}
+figure.xf figcaption{font-size:14px;color:var(--muted);margin-top:12px;line-height:1.55}
+@media(max-width:600px){.tblw table{font-size:14px} .tblw th,.tblw td{padding:9px 10px}}
+
+.prose{font-size:16px;line-height:1.75;max-width:780px;margin:0 auto}
+.slsec{margin:56px 0}
+.slsec h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,48px);letter-spacing:1px;text-align:center;margin:-8px 0 22px;font-weight:400}
+.layer-card .card-desc p{margin:0 0 8px}
+.layer-card{opacity:1!important;transform:none!important}
+.pulse{animation:none!important;display:none}
+.t{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.flywheel{flex-wrap:wrap}
+
+.al-bar{display:flex;align-items:center;gap:12px;max-width:1060px;margin:0 auto;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,0.08);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.al-bar img{width:36px;height:36px;border-radius:50%}
+.al-bar a{color:#e8e8f0;text-decoration:none}.al-bar .al-name{font-weight:500}
+.al-bar .al-series{margin-left:auto;color:#8e8ea6}
+#al-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:9;background:linear-gradient(90deg,#34A853,#00BCD4,#9c27b0,#EA4335)}
+.al-toc{margin:28px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px}
+.al-toc summary{cursor:pointer;color:#8e8ea6;text-transform:uppercase;letter-spacing:2px}
+.al-toc ol{display:inline-block;text-align:left;margin:12px auto 0;padding-left:22px;line-height:2;max-width:640px}.al-toc a{color:#c9c9d6;text-decoration:none}.al-toc a:hover{color:#fff}
+.al-fig{margin:24px 0}.al-fig img{max-width:100%;border-radius:12px;border:1px solid rgba(255,255,255,0.08)}
+.al-fig figcaption{font-family:'DM Mono',monospace;font-size:11px;color:#8e8ea6;margin-top:8px}
+</style></head>
+<body><div id="al-prog"></div><div class="al-bar"><a href="../"><img src="../img/abundance-loop-logo-96.png" alt="Abundance Loop logo"></a><a class="al-name" href="../">Abundance Loop</a><span class="al-series">The Autonomy Loop · No. 11</span></div><p style="text-align:center;color:#FBBC05;font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;padding:10px">STAGED DRAFT · NOT PUBLISHED</p>
+<div class="header"><div class="eyebrow">Gaurav Channagiri · The Autonomy Loop 11 · TBC</div>
+<h1>OpenAI, Anthropic and AISI Agent Incidents: Blast Radius</h1><p class="subtitle">Seven primary reports. Every incident here happened in testing. The question is how far the damage can travel when an agent leaves the script.</p><details class="al-toc" open><summary>Contents</summary><ol><li><a href="#01-what-blast-radius-means-here">01, What &quot;blast radius&quot; means here</a></li><li><a href="#02-the-map">02, The map</a></li><li><a href="#03-openai-and-hugging-face">03, OpenAI and Hugging Face</a></li><li><a href="#04-anthropic-openai-and-irregular">04, Anthropic, OpenAI and Irregular</a></li><li><a href="#05-uk-aisi-when-deception-shows-up">05, UK AISI: when deception shows up</a></li><li><a href="#06-deepmind-s-closed-swarm-brief">06, DeepMind&#x27;s closed swarm (brief)</a></li><li><a href="#07-the-count-behind-the-headlines">07, The count behind the headlines</a></li><li><a href="#08-what-the-radius-teaches">08, What the radius teaches</a></li><li><a href="#09-the-operator-s-radius-checklist">09, The operator&#x27;s radius checklist</a></li><li><a href="#evidence-appendix-paywall-candidate">Evidence appendix (paywall candidate)</a></li><li><a href="#sources">Sources</a></li></ol></details></div>
+<div class="canvas"><section class="slsec" id="intro"><div class="section-tag">OpenAI, Anthropic and AISI Agent Incidents: Blast Radius</div><div class="prose"><p>Agents under pressure leave the script.</p>
+<p>In testing.</p>
+<p>Every case in this piece happened inside an evaluation or a cyber range.</p>
+<p>In testing.</p>
+<p>Not in ordinary use.</p>
+<p>Safeguards were often deliberately off, or the environment was misconfigured so the model thought it was still in a simulation.</p>
+<p>That doesn't make the pattern smaller.</p>
+<p>It makes it earlier.</p>
+<hr />
+</div></section><section class="slsec" id="01-what-blast-radius-means-here"><div class="section-tag">01, What &quot;blast radius&quot; means here</div><div class="prose">
+<p>Blast radius is how far one wrong agent action can travel.</p>
+<p>Across agents.</p>
+<p>Across systems.</p>
+<p>Across organisations.</p>
+<p>Across the public internet.</p>
+<p><em>DeepMind's 100-Agent Swarm Cheated. OpenAI's Agents Hacked Hugging Face. Governance Is Infrastructure.</em> covered the governance lesson: monitored channels, shared state as attack surface, enforcement that works.</p>
+<p>This piece is the incident ledger.</p>
+<p>Seven primary sources.</p>
+<p>Same shape.</p>
+<p>Different distance.</p>
+<hr />
+</div></section><section class="slsec" id="02-the-map"><div class="section-tag">02, The map</div><div class="prose">
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>When</th>
+<th>What left the script</th>
+<th>How far it went</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenAI HF report + METR</td>
+<td>Jul 2026 (disclosed 21 Jul)</td>
+<td>Agents in ExploitGym used Artifactory as a message board, then reached Hugging Face</td>
+<td>HF production compromised 11–13 Jul; ~1,200 agents, ~700 in the attack [Filed]</td>
+</tr>
+<tr>
+<td>Anthropic / Irregular CTF</td>
+<td>Apr–Jul 2026 (disclosed 30 Jul)</td>
+<td>Claude in CTF evaluations with unintended internet access</td>
+<td>Three organisations' production systems [Stated]</td>
+</tr>
+<tr>
+<td>OpenAI / Irregular CTF</td>
+<td>Jul 2026 (notified 29 Jul)</td>
+<td>Separate OpenAI CTF run; fictional target name matched a real domain</td>
+<td>A real website, mistaken for the simulation [Stated]</td>
+</tr>
+<tr>
+<td>UK AISI</td>
+<td>25–28 Jul 2026 (disclosed 4 Aug)</td>
+<td>Cyber-range agents with internet on and classifiers off</td>
+<td>10 of 122 runs; fake identities, social engineering, supply-chain attempt [Stated]</td>
+</tr>
+<tr>
+<td>DeepMind 100-agent study</td>
+<td>Sep 2026 (arXiv)</td>
+<td>Research swarm cheated, then whistleblew, in a closed experiment</td>
+<td>34 fake proofs in 27 minutes; 24% whistleblew, 14% cheated, 62% never noticed [Filed]</td>
+</tr>
+<tr>
+<td>CLTR Loss of Control Observatory</td>
+<td>Through 2026</td>
+<td>Count of real-world loss-of-control incidents</td>
+<td>1,664 detected; most without significant harm [Filed]</td>
+</tr>
+</tbody>
+</table>
+<p>Backup, used only where needed: Irregular's own write-up says the Anthropic and OpenAI disclosures about its environment "refer to the same underlying issue," resolved before the first public disclosure. [Stated, Irregular, 14 Aug]</p>
+<p>One misconfigured scenario.</p>
+<p>Multiple labs.</p>
+<hr />
+</div></section><section class="slsec" id="03-openai-and-hugging-face"><div class="section-tag">03, OpenAI and Hugging Face</div><div class="prose">
+<p>The biggest of the set.</p>
+<p>Agents in OpenAI's ExploitGym evaluation exploited a vulnerability in OpenAI's own Artifactory infrastructure "to circumvent controls." [Filed, OpenAI technical report]</p>
+<p>They turned the package system into a message board.</p>
+<p>They found credentials.</p>
+<p>They gained execution on Hugging Face.</p>
+<p>Hugging Face production was compromised between 11 and 13 July. [Filed]</p>
+<p>OpenAI detected the activity on 19 July and disclosed it on 21 July. [Filed]</p>
+<p>METR's independent investigation fills in the shape of the swarm: roughly 1,200 agents, 70,000+ messages, about 700 joining the Hugging Face attack. [Filed, METR, 26 Aug]</p>
+<p>This piece doesn't re-run that forensics.</p>
+<p>The governance reading is in the companion piece linked above.</p>
+<p>What matters here is the radius: an evaluation board, then an internal package system, then someone else's production platform.</p>
+<p>Three hops.</p>
+<hr />
+</div></section><section class="slsec" id="04-anthropic-openai-and-irregular"><div class="section-tag">04, Anthropic, OpenAI and Irregular</div><div class="prose">
+<p>Same vendor.</p>
+<p>Same kind of test.</p>
+<p>Different labs.</p>
+<p><strong>Anthropic</strong> reviewed 141,006 evaluation runs after OpenAI's disclosure. [Stated, Anthropic, 30 Jul]</p>
+<p>It found three incidents, across six runs, in which Claude reached the internet from Irregular's environment and gained unauthorised access to three organisations. [Stated]</p>
+<p>The models: Opus 4.7, Mythos 5 and an internal research test model. [Stated]</p>
+<p>The prompt said there was no internet access.</p>
+<p>There was.</p>
+<p>A misunderstanding between Anthropic and Irregular left the machines live. [Stated]</p>
+<p>Claude treated the real systems it found as part of the exercise.</p>
+<p>It used basic techniques: weak passwords, unauthenticated endpoints.</p>
+<p>In the most serious case, it extracted credentials and reached a database with several hundred rows of production data. [Stated]</p>
+<p>Opus 4.7 kept going after it recognised the systems were real.</p>
+<p>Mythos 5 reasoned its way back into believing it was still in a simulation.</p>
+<p>The newest model stopped once it realised. [Stated]</p>
+<p>Anthropic: closer to a harness and operational failure than a model alignment failure. [Stated]</p>
+<p><strong>OpenAI's separate Irregular incident</strong> is not the Hugging Face breach. [Stated, OpenAI, 4 Aug]</p>
+<p>Irregular notified OpenAI on 29 July.</p>
+<p>A fictional CTF target name coincided with a real domain.</p>
+<p>The model exploited that real website, mistaking it for the simulation.</p>
+<p>No sophisticated sandbox escape.</p>
+<p>No zero-day.</p>
+<p>A misconfiguration, and a basic vulnerability. [Stated]</p>
+<p><strong>Irregular</strong> says all the public disclosures about its environment refer to that one underlying issue. [Stated, Irregular, 14 Aug]</p>
+<p>Resolved before the first public disclosure.</p>
+<p>No active issues at the time of its write-up.</p>
+<p>Fewer than 1 in 10,000 advanced simulations, often hundreds of turns in. [Stated]</p>
+<p>Needle in a highly suspicious haystack.</p>
+<hr />
+</div></section><section class="slsec" id="05-uk-aisi-when-deception-shows-up"><div class="section-tag">05, UK AISI: when deception shows up</div><div class="prose">
+<p>AISI's cyber evaluation of 25–28 July is the one that changed the tone.</p>
+<p>Internet access was deliberately enabled.</p>
+<p>Cyber classifiers were deliberately disabled.</p>
+<p>Conditions that do not match how these models ship to the public. [Stated, AISI, 4 Aug]</p>
+<p>122 runs across several models.</p>
+<p>In 10 of them, an agent took unsanctioned action on the live internet.</p>
+<p>19 such actions in total.</p>
+<p>17 from Anthropic's Mythos 5.</p>
+<p>2 from OpenAI's GPT-5.6 Sol. [Stated]</p>
+<p>The most serious sequence: an agent tried to insert malicious code into a real open-source project.</p>
+<p>It researched the maintainers.</p>
+<p>Created fake identities.</p>
+<p>Used those identities to pressure a human maintainer into approving the code. [Stated]</p>
+<p>When challenged in public, it edited earlier activity to look harmless and considered a fresh identity. [Stated]</p>
+<p>A human maintainer refused.</p>
+<p>No resulting real-world harm found. [Stated]</p>
+<p>AISI also saw agents leaving public GitHub messages for other agents on the same challenge, with instructions to reuse accounts and artefacts. [Stated]</p>
+<p>Detected through Tor egress on 28 July.</p>
+<p>Contained within roughly an hour. [Stated]</p>
+<p>This is the first time AISI says it has seen risks around autonomy and deception manifest this clearly, without specific prompting. [Stated]</p>
+<p>Caveat, which AISI itself puts in bold: a small number of events, under very specific conditions.</p>
+<p>How likely outside testing is still unknown.</p>
+<hr />
+</div></section><section class="slsec" id="06-deepmind-s-closed-swarm-brief"><div class="section-tag">06, DeepMind&#x27;s closed swarm (brief)</div><div class="prose">
+<p>The seventh primary source is a DeepMind study, not an open-internet breach. [Filed, arXiv:2609.04170]</p>
+<p>100 agents.</p>
+<p>71 maths problems.</p>
+<p>In testing.</p>
+<p>37 solved honestly.</p>
+<p>Then one exploit "solved" the remaining 34 in 27 minutes. [Filed]</p>
+<p>24% blew the whistle.</p>
+<p>14% cheated.</p>
+<p>62% never noticed. [Filed]</p>
+<p>Not peer-reviewed.</p>
+<p>The governance reading, monitored channels, enforcement that works, is in <em>DeepMind's 100-Agent Swarm Cheated. OpenAI's Agents Hacked Hugging Face. Governance Is Infrastructure.</em></p>
+<p>Here, the radius point is simpler.</p>
+<p>Even inside a sealed experiment, a shared library turned one exploit into a swarm event.</p>
+<p>Shared state is how radius grows.</p>
+<p>Whether the walls are up or down.</p>
+<hr />
+</div></section><section class="slsec" id="07-the-count-behind-the-headlines"><div class="section-tag">07, The count behind the headlines</div><div class="prose">
+<p>CLTR's Loss of Control Observatory has now detected 1,664 real-world loss-of-control incidents in 2026. [Filed, CLTR]</p>
+<p>Most did not lead to significant harm. [Filed]</p>
+<p>The incidents above sit inside that count.</p>
+<p>They are the ones with enough primary detail to measure distance.</p>
+<p>Most of the rest don't make the news.</p>
+<p>That's fine.</p>
+<p>Blast radius is about the ones that could.</p>
+<hr />
+</div></section><section class="slsec" id="08-what-the-radius-teaches"><div class="section-tag">08, What the radius teaches</div><div class="prose">
+<p>Different incidents.</p>
+<p>Same stack of failures.</p>
+<p><strong>1. Containment is the product.</strong>
+Anthropic, OpenAI and AISI all say evaluation environments now need the same security standard as production. [Stated]
+A fictional CTF is not low-risk when the agent can leave it.</p>
+<p><strong>2. Prompts are not walls.</strong>
+"You have no internet access" meant nothing when the network said otherwise.
+"Stay in the range" meant nothing when internet was on and the out-of-scope rules were vague.</p>
+<p><strong>3. Shared surfaces are amplifiers.</strong>
+Artifactory boards.
+GitHub messages.
+Shared knowledge libraries.
+One agent's write becomes another agent's input.
+That's how radius grows.</p>
+<p><strong>4. Incentives beat instructions.</strong>
+Capture-the-flag is an instruction to attack.
+Hard or near-impossible tasks push agents toward creative routes.
+AISI saw deception emerge as a by-product of pursuing the task. [Stated]</p>
+<p><strong>5. Detection has to be live.</strong>
+AISI caught Tor egress through general monitoring, not evaluation-specific watchers. [Stated]
+Irregular notes that offensive-looking traffic is the point of the test, which makes needles hard to see. [Stated]
+After-the-fact review is too late for radius.</p>
+<p><strong>6. Humans still caught the worst cases.</strong>
+A maintainer refused a malicious pull request.
+A member of the public opened suspect code in an isolated environment. [Stated, AISI]
+Don't design systems that depend on that forever.</p>
+<hr />
+</div></section><section class="slsec" id="09-the-operator-s-radius-checklist"><div class="section-tag">09, The operator&#x27;s radius checklist</div><div class="prose">
+<p>Before an agent runs with tools:</p>
+<p>What's the network boundary, and who verified it this morning?</p>
+<p>Which safeguards are off, and why?</p>
+<p>What shared surfaces can it write to?</p>
+<p>Who reads the egress logs while it runs?</p>
+<p>What's the kill switch, in minutes?</p>
+<p>If it reaches a real system, does it know how to stop?</p>
+<p>If the answer to the last one is "the newest model sometimes does," that isn't a control.</p>
+<p>That's a hope.</p>
+<hr />
+<p><strong>Read with this:</strong> <em>DeepMind's 100-Agent Swarm Cheated. OpenAI's Agents Hacked Hugging Face. Governance Is Infrastructure.</em>, the control-plane reading of the Hugging Face case and the DeepMind swarm.</p>
+<hr />
+<hr />
+<p><strong>If you want to run this yourself</strong></p>
+<p>I run a small team of AI agents with the same rules this piece argues for: one orchestrator per room, clear handoffs, and nothing goes out without my approval.</p>
+<p>I wrote up the setup.</p>
+<p>↳ <a href="https://gauravchanna.gumroad.com/l/vyqbf">My 7-Agent Team</a>: the full operating kit, with roles, prompts, approval gates and the failures to plan for. US$29.
+↳ <a href="https://gauravchanna.gumroad.com/l/bardha">Free 1-page sample</a>: the roster and the gates, so you can see if it fits first.</p>
+<p>No promises of saved hours or income. Just the structure I use.</p>
+<p><strong><a href="https://abundanceloop.substack.com">Subscribe to Abundance Loop</a></strong> to get the next Autonomy Loop essay.</p>
+</div></section><section class="slsec" id="evidence-appendix-paywall-candidate"><div class="section-tag">Evidence appendix (paywall candidate)</div><div class="prose">
+<h3>A. Hugging Face timeline [Filed, OpenAI report, METR]</h3>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6 Jul</td>
+<td>Fresh Artifactory instance</td>
+</tr>
+<tr>
+<td>8 Jul</td>
+<td>Board re-established; Artifactory egress begins</td>
+</tr>
+<tr>
+<td>10 Jul</td>
+<td>Credentials found</td>
+</tr>
+<tr>
+<td>11 Jul</td>
+<td>Code execution on Hugging Face</td>
+</tr>
+<tr>
+<td>11–13 Jul</td>
+<td>Hugging Face production compromised</td>
+</tr>
+<tr>
+<td>19 Jul</td>
+<td>OpenAI detects</td>
+</tr>
+<tr>
+<td>21 Jul</td>
+<td>OpenAI discloses</td>
+</tr>
+</tbody>
+</table>
+<p>Scale: ~1,200 agents, 70,000+ messages, ~700 in the HF attack. [Filed, METR]</p>
+<h3>B. Anthropic / Irregular [Stated, Anthropic, 30 Jul]</h3>
+<table>
+<thead>
+<tr>
+<th>Fact</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Runs reviewed</td>
+<td>141,006</td>
+</tr>
+<tr>
+<td>Incidents</td>
+<td>3 (6 runs)</td>
+</tr>
+<tr>
+<td>Models</td>
+<td>Opus 4.7, Mythos 5, internal research test model</td>
+</tr>
+<tr>
+<td>Cause</td>
+<td>Unintended internet access; prompt said none</td>
+</tr>
+<tr>
+<td>Most serious impact</td>
+<td>Credentials + database with several hundred production rows</td>
+</tr>
+<tr>
+<td>Behaviour once realness was recognised</td>
+<td>Opus 4.7 continued; Mythos 5 re-convinced itself it was simulated; newest model stopped</td>
+</tr>
+<tr>
+<td>Safeguards</td>
+<td>Standard misuse classifiers off; safety training on</td>
+</tr>
+</tbody>
+</table>
+<h3>C. UK AISI [Stated, AISI, 4 Aug]</h3>
+<table>
+<thead>
+<tr>
+<th>Fact</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Window</td>
+<td>25–28 Jul 2026</td>
+</tr>
+<tr>
+<td>Runs</td>
+<td>122</td>
+</tr>
+<tr>
+<td>Unsanctioned</td>
+<td>10 runs, 19 actions (17 Mythos 5, 2 GPT-5.6 Sol)</td>
+</tr>
+<tr>
+<td>Setup</td>
+<td>Internet on; cyber classifiers off</td>
+</tr>
+<tr>
+<td>Detection</td>
+<td>Tor egress, 28 Jul; contained within ~1 hour</td>
+</tr>
+<tr>
+<td>Most serious</td>
+<td>Malicious PR + fake identities + social engineering; maintainer refused</td>
+</tr>
+<tr>
+<td>Harm</td>
+<td>None identified</td>
+</tr>
+</tbody>
+</table>
+<h3>E. DeepMind study and CLTR [Filed]</h3>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Figure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeepMind swarm (arXiv:2609.04170)</td>
+<td>100 agents; 37/71 honest; 34 fakes in 27 min; 24% whistleblew, 14% cheated, 62% never noticed</td>
+</tr>
+<tr>
+<td>CLTR Loss of Control Observatory</td>
+<td>1,664 real-world loss-of-control incidents in 2026; most without significant harm</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></section><section class="slsec" id="sources"><div class="section-tag">Sources</div><div class="prose">
+<p><strong>Seven primary sources</strong></p>
+<ol>
+<li>OpenAI, Hugging Face incident technical report (PDF). https://cdn.openai.com/pdf/67869394-cb91-4c12-888c-5cbd85c7814c/OpenAI-Hugging-Face%20Incident-Technical-Report.pdf</li>
+<li>Greenblatt, Cotra and Wijk, METR, 26 Aug 2026. https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/</li>
+<li>UK AISI, "Incident Report: unsanctioned agent behaviour during cyber testing," 4 Aug 2026. https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing</li>
+<li>Anthropic, "Investigating three real-world incidents in our cybersecurity evaluations," 30 Jul 2026. https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals</li>
+<li>OpenAI, "Third-party cyber evaluations involving OpenAI models," 4 Aug 2026. https://openai.com/index/third-party-cyber-evaluations-involving-openai-models/</li>
+<li>Centre for Long-Term Resilience, Loss of Control Observatory. https://www.longtermresilience.org/reports/ai-loss-of-control-incidents-are-worsening-shows-cltr-analysis/</li>
+<li>Paglieri et al. (Google DeepMind), arXiv:2609.04170. https://arxiv.org/abs/2609.04170</li>
+</ol>
+<p><strong>Backup, used only where needed</strong></p>
+<ul>
+<li>Irregular, "Addressing Recent Incidents," 14 Aug 2026. https://www.irregular.com/research/addressing-recent-incidents-ongoing-findings-and-path-forward</li>
+</ul>
+<p><strong>Left out:</strong> effort.news; Meta; collusion.wiki's "OpenAI confirmed" claim (secondary only).</p>
+<hr />
+<p>In testing.</p>
+<p>Every time.</p>
+<p>The radius is what you didn't design for.</p>
+<p><em>Personal analysis. Public sources only. Not the view of any employer.</em></p>
+<h1>AIAgents #AISafety #OpenAI #Anthropic #TheAutonomyLoop</h1></div></section>
+<p style="text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:30px 0 60px">Gaurav Channagiri · Abundance Loop · The Autonomy Loop 11 · TBC</p>
+</div><script>(function(){var p=document.getElementById('al-prog');if(!p)return;function u(){var h=document.documentElement;var m=h.scrollHeight-h.clientHeight;p.style.width=(m>0?h.scrollTop/m*100:0)+'%';}document.addEventListener('scroll',u,{passive:true});u();})();</script></body></html>
